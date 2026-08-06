@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>比例式 暗算トレーニング</title>
+<style>
+  :root {
+    --bg: #f7f7fb;
+    --panel: #ffffff;
+    --text: #1c1e26;
+    --muted: #6b7280;
+    --accent: #3b82f6;
+    --accent-dark: #2563eb;
+    --good: #16a34a;
+    --good-bg: #dcfce7;
+    --bad: #dc2626;
+    --bad-bg: #fee2e2;
+    --border: #e5e7eb;
+    --shadow: 0 8px 24px rgba(20, 20, 40, 0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14151c;
+      --panel: #1e2029;
+      --text: #edeef2;
+      --muted: #9aa0ad;
+      --accent: #60a5fa;
+      --accent-dark: #3b82f6;
+      --good: #4ade80;
+      --good-bg: #14321f;
+      --bad: #f87171;
+      --bad-bg: #3a1616;
+      --border: #2c2e3a;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 60px;
+  }
+  .app {
+    width: 100%;
+    max-width: 640px;
+  }
+  h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 8px 0 4px;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* --- Setup screen --- */
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 20px;
+  }
+  legend {
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  .option-btn {
+    padding: 10px 8px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color .15s, background .15s;
+  }
+  .option-btn.selected {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, var(--panel));
+    font-weight: 700;
+  }
+  .option-btn small {
+    display: block;
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+  .option-btn.selected small { color: var(--text); opacity: .75; }
+
+  .primary-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    transition: background .15s, transform .05s;
+  }
+  .primary-btn:hover { background: var(--accent-dark); }
+  .primary-btn:active { transform: scale(0.98); }
+  .secondary-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  /* --- Practice screen --- */
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width .2s ease;
+  }
+  .equation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 2.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 28px 0 30px;
+    font-variant-numeric: tabular-nums;
+  }
+  .equation .colon { color: var(--muted); font-weight: 400; }
+  .equation .eq { color: var(--muted); margin: 0 6px; font-weight: 400; }
+  .equation .x-box {
+    color: var(--accent);
+  }
+  .answer-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  #answerInput {
+    flex: 1;
+    font-size: 1.4rem;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  #answerInput:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  #answerInput.correct { border-color: var(--good); background: var(--good-bg); }
+  #answerInput.wrong { border-color: var(--bad); background: var(--bad-bg); }
+
+  .feedback {
+    min-height: 54px;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    visibility: hidden;
+  }
+  .feedback.show { visibility: visible; }
+  .feedback.good { background: var(--good-bg); color: var(--good); }
+  .feedback.bad { background: var(--bad-bg); color: var(--bad); }
+  .feedback .mark { font-size: 1.3rem; }
+  .feedback .detail { color: var(--text); opacity: .85; font-size: 0.85rem; }
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .toolbar label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+  /* --- Result screen --- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 18px 0 22px;
+  }
+  .stat {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 8px;
+    text-align: center;
+  }
+  .stat .num {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .stat .label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .missed-list {
+    max-height: 220px;
+    overflow-y: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+  .missed-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 4px;
+    font-size: 0.9rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  .missed-item .eq-text { font-variant-numeric: tabular-nums; }
+  .missed-item .your-ans { color: var(--bad); }
+  .missed-item .right-ans { color: var(--good); font-weight: 700; }
+  .empty-missed {
+    text-align: center;
+    color: var(--muted);
+    padding: 12px 0;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>比例式 暗算トレーニング</h1>
+  <div class="subtitle">3&nbsp;:&nbsp;8 = 6&nbsp;:&nbsp;x のような比例式をすばやく解く練習</div>
+
+  <!-- SETUP SCREEN -->
+  <div class="screen active" id="screen-setup">
+    <div class="card">
+      <fieldset>
+        <legend>難易度</legend>
+        <div class="option-grid" id="difficultyOptions" data-group="difficulty">
+          <div class="option-btn" data-value="easy">やさしい<small>1〜6 × 1〜6</small></div>
+          <div class="option-btn selected" data-value="normal">ふつう<small>1〜9 × 1〜9</small></div>
+          <div class="option-btn" data-value="hard">むずかしい<small>1〜12 × 2〜15</small></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>xの位置</legend>
+        <div class="option-grid" id="positionOptions" data-group="position">
+          <div class="option-btn selected" data-value="last">いつも最後<small>a:b = c:x</small></div>
+          <div class="option-btn" data-value="random">ランダム<small>4か所どこでも</small></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>問題数</legend>
+        <div class="option-grid" id="countOptions" data-group="count">
+          <div class="option-btn" data-value="10">10問</div>
+          <div class="option-btn selected" data-value="20">20問</div>
+          <div class="option-btn" data-value="30">30問</div>
+          <div class="option-btn" data-value="9999">エンドレス</div>
+        </div>
+      </fieldset>
+
+      <button class="primary-btn" id="startBtn">はじめる</button>
+    </div>
+  </div>
+
+  <!-- PRACTICE SCREEN -->
+  <div class="screen" id="screen-practice">
+    <div class="card">
+      <div class="hud">
+        <span id="hudProgress">1 / 20</span>
+        <span id="hudScore">正解 0 ・ 不正解 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:5%"></div></div>
+
+      <div class="equation" id="equationDisplay"></div>
+
+      <div class="answer-row">
+        <input type="text" inputmode="numeric" id="answerInput" placeholder="?" autocomplete="off">
+        <button class="primary-btn" style="width:auto; padding:0 22px;" id="submitBtn">答える</button>
+      </div>
+
+      <div class="feedback" id="feedback">
+        <span class="mark" id="feedbackMark"></span>
+        <span id="feedbackText"></span>
+      </div>
+
+      <div class="toolbar">
+        <label><input type="checkbox" id="autoAdvance" checked> 自動で次へ進む</label>
+        <span id="timerDisplay">0.0秒</span>
+      </div>
+      <button class="secondary-btn" id="quitBtn">中断して終了</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="screen" id="screen-result">
+    <div class="card">
+      <h2 style="margin-top:0; text-align:center;">結果</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="num" id="resAccuracy">0%</div><div class="label">正答率</div></div>
+        <div class="stat"><div class="num" id="resCorrect">0/0</div><div class="label">正解数</div></div>
+        <div class="stat"><div class="num" id="resAvgTime">0.0秒</div><div class="label">平均解答時間</div></div>
+      </div>
+      <div class="missed-list" id="missedList"></div>
+      <button class="primary-btn" id="retryBtn" style="margin-top:18px;">もう一度</button>
+      <button class="secondary-btn" id="backBtn">設定に戻る</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const settings = { difficulty: "normal", position: "last", count: 20 };
+
+  const DIFFICULTY = {
+    easy:   { pqMax: 6,  kMin: 1, kMax: 6  },
+    normal: { pqMax: 9,  kMin: 1, kMax: 9  },
+    hard:   { pqMax: 12, kMin: 2, kMax: 15 },
+  };
+
+  // --- option button wiring (setup screen) ---
+  document.querySelectorAll(".option-grid").forEach(grid => {
+    grid.addEventListener("click", e => {
+      const btn = e.target.closest(".option-btn");
+      if (!btn) return;
+      const group = grid.dataset.group;
+      grid.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      const value = btn.dataset.value;
+      if (group === "count") settings.count = parseInt(value, 10);
+      else settings[group] = value;
+    });
+  });
+
+  // --- math helpers ---
+  function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+  function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  function pickCoprimePair(max) {
+    let p, q;
+    do {
+      p = randInt(1, max);
+      q = randInt(1, max);
+    } while (p === q || gcd(p, q) !== 1);
+    return [p, q];
+  }
+
+  function generateProblem() {
+    const cfg = DIFFICULTY[settings.difficulty];
+    const [p, q] = pickCoprimePair(cfg.pqMax);
+    let k, j;
+    do {
+      k = randInt(cfg.kMin, cfg.kMax);
+      j = randInt(cfg.kMin, cfg.kMax);
+    } while (k === j);
+
+    const numbers = [p * k, q * k, p * j, q * j]; // a, b, c, d
+
+    const position = settings.position === "last" ? 3 : randInt(0, 3);
+    const answer = numbers[position];
+    const display = numbers.slice();
+    display[position] = "x";
+
+    return { numbers, position, answer, base: { p, q, k, j } };
+  }
+
+  // --- screen management ---
+  const screens = {
+    setup: document.getElementById("screen-setup"),
+    practice: document.getElementById("screen-practice"),
+    result: document.getElementById("screen-result"),
+  };
+  function showScreen(name) {
+    Object.values(screens).forEach(s => s.classList.remove("active"));
+    screens[name].classList.add("active");
+  }
+
+  // --- practice state ---
+  let session = null;
+  let current = null;
+  let questionStart = 0;
+  let awaitingNext = false;
+  let advanceTimer = null;
+
+  const equationDisplay = document.getElementById("equationDisplay");
+  const answerInput = document.getElementById("answerInput");
+  const feedback = document.getElementById("feedback");
+  const feedbackMark = document.getElementById("feedbackMark");
+  const feedbackText = document.getElementById("feedbackText");
+  const hudProgress = document.getElementById("hudProgress");
+  const hudScore = document.getElementById("hudScore");
+  const progressFill = document.getElementById("progressFill");
+  const timerDisplay = document.getElementById("timerDisplay");
+
+  function renderEquation(display) {
+    const parts = display.map((v, i) => {
+      const isX = v === "x";
+      return `<span class="${isX ? "x-box" : ""}">${isX ? "x" : v}</span>`;
+    });
+    equationDisplay.innerHTML =
+      `${parts[0]}<span class="colon">:</span>${parts[1]}` +
+      `<span class="eq">=</span>` +
+      `${parts[2]}<span class="colon">:</span>${parts[3]}`;
+  }
+
+  function startSession() {
+    session = {
+      total: settings.count,
+      index: 0,
+      correct: 0,
+      wrong: 0,
+      times: [],
+      missed: [],
+      endless: settings.count >= 9999,
+    };
+    showScreen("practice");
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    clearTimeout(advanceTimer);
+    awaitingNext = false;
+    session.index++;
+    current = generateProblem();
+    renderEquation(current.numbers.map((v, i) => (i === current.position ? "x" : v)));
+    answerInput.value = "";
+    answerInput.classList.remove("correct", "wrong");
+    answerInput.disabled = false;
+    feedback.classList.remove("show", "good", "bad");
+    feedbackMark.textContent = "";
+    feedbackText.textContent = "";
+    answerInput.focus();
+    questionStart = performance.now();
+
+    hudProgress.textContent = session.endless
+      ? `${session.index}問目`
+      : `${session.index} / ${session.total}`;
+    hudScore.textContent = `正解 ${session.correct} ・ 不正解 ${session.wrong}`;
+    progressFill.style.width = session.endless
+      ? "100%"
+      : `${Math.min(100, (session.index - 1) / session.total * 100)}%`;
+    timerDisplay.textContent = "0.0秒";
+    tickTimer();
+  }
+
+  let timerRAF = null;
+  function tickTimer() {
+    cancelAnimationFrame(timerRAF);
+    function loop() {
+      if (awaitingNext) return;
+      const elapsed = (performance.now() - questionStart) / 1000;
+      timerDisplay.textContent = elapsed.toFixed(1) + "秒";
+      timerRAF = requestAnimationFrame(loop);
+    }
+    loop();
+  }
+
+  function submitAnswer() {
+    if (awaitingNext) return;
+    const raw = answerInput.value.trim();
+    if (raw === "") { answerInput.focus(); return; }
+    const userAnswer = Number(raw);
+    const elapsed = (performance.now() - questionStart) / 1000;
+    const isCorrect = Number.isFinite(userAnswer) && userAnswer === current.answer;
+
+    awaitingNext = true;
+    session.times.push(elapsed);
+
+    const eqText = current.numbers
+      .map((v, i) => (i === current.position ? "x" : v))
+      .join(",");
+    const [a, b, c, d] = current.numbers;
+
+    if (isCorrect) {
+      session.correct++;
+      answerInput.classList.add("correct");
+      feedback.classList.add("show", "good");
+      feedbackMark.textContent = "○";
+      feedbackText.innerHTML = `正解！ <span class="detail">x = ${current.answer}（${elapsed.toFixed(1)}秒）</span>`;
+    } else {
+      session.wrong++;
+      answerInput.classList.add("wrong");
+      feedback.classList.add("show", "bad");
+      feedbackMark.textContent = "×";
+      feedbackText.innerHTML = `不正解。正解は <b>x = ${current.answer}</b> <span class="detail">（${a}:${b} = ${c}:${d}）</span>`;
+      session.missed.push({
+        yourAnswer: raw,
+        rightAnswer: current.answer,
+        problem: current,
+      });
+    }
+    answerInput.disabled = true;
+    hudScore.textContent = `正解 ${session.correct} ・ 不正解 ${session.wrong}`;
+
+    const isLast = !session.endless && session.index >= session.total;
+
+    if (document.getElementById("autoAdvance").checked) {
+      advanceTimer = setTimeout(() => {
+        if (isLast) finishSession(); else nextQuestion();
+      }, isCorrect ? 900 : 1900);
+    } else {
+      feedbackText.innerHTML += ` <span class="detail">(Enterで次へ)</span>`;
+    }
+    pendingLast = isLast;
+  }
+
+  let pendingLast = false;
+
+  function finishSession() {
+    clearTimeout(advanceTimer);
+    showScreen("result");
+    const totalAnswered = session.correct + session.wrong;
+    const accuracy = totalAnswered ? Math.round((session.correct / totalAnswered) * 100) : 0;
+    const avgTime = session.times.length
+      ? (session.times.reduce((a, b) => a + b, 0) / session.times.length)
+      : 0;
+
+    document.getElementById("resAccuracy").textContent = accuracy + "%";
+    document.getElementById("resCorrect").textContent = `${session.correct}/${totalAnswered}`;
+    document.getElementById("resAvgTime").textContent = avgTime.toFixed(1) + "秒";
+
+    const missedList = document.getElementById("missedList");
+    missedList.innerHTML = "";
+    if (session.missed.length === 0) {
+      missedList.innerHTML = `<div class="empty-missed">ミスなし！パーフェクトです。</div>`;
+    } else {
+      session.missed.forEach(m => {
+        const [a, b, c, d] = m.problem.numbers;
+        const disp = [a, b, c, d];
+        disp[m.problem.position] = "x";
+        const row = document.createElement("div");
+        row.className = "missed-item";
+        row.innerHTML = `<span class="eq-text">${disp[0]}:${disp[1]} = ${disp[2]}:${disp[3]}</span>
+          <span>あなた: <span class="your-ans">${m.yourAnswer || "―"}</span> → <span class="right-ans">${m.rightAnswer}</span></span>`;
+        missedList.appendChild(row);
+      });
+    }
+  }
+
+  // --- events ---
+  document.getElementById("startBtn").addEventListener("click", startSession);
+  document.getElementById("submitBtn").addEventListener("click", submitAnswer);
+  document.getElementById("quitBtn").addEventListener("click", () => {
+    if (session && (session.correct + session.wrong) > 0) finishSession();
+    else showScreen("setup");
+  });
+  document.getElementById("retryBtn").addEventListener("click", startSession);
+  document.getElementById("backBtn").addEventListener("click", () => showScreen("setup"));
+
+  answerInput.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    if (awaitingNext) {
+      clearTimeout(advanceTimer);
+      if (pendingLast) finishSession(); else nextQuestion();
+    } else {
+      submitAnswer();
+    }
+  });
+
+  // restrict input to numeric-ish characters for convenience
+  answerInput.addEventListener("input", () => {
+    answerInput.value = answerInput.value.replace(/[^0-9\-]/g, "");
+  });
+})();
+</script>
+</body>
+</html>
