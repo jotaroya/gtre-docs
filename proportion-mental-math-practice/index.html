@@ -6,82 +6,143 @@
 <title>比例式 暗算トレーニング</title>
 <style>
   :root {
-    --bg: #f7f7fb;
-    --panel: #ffffff;
-    --text: #1c1e26;
-    --muted: #6b7280;
-    --accent: #3b82f6;
-    --accent-dark: #2563eb;
-    --good: #16a34a;
-    --good-bg: #dcfce7;
-    --bad: #dc2626;
-    --bad-bg: #fee2e2;
-    --border: #e5e7eb;
-    --shadow: 0 8px 24px rgba(20, 20, 40, 0.08);
+    --paper: #eef1ee;
+    --grid-line: rgba(44, 74, 124, 0.12);
+    --card: #fdfdfb;
+    --card-border: rgba(32, 38, 50, 0.13);
+    --ink: #20242e;
+    --muted: #5c6474;
+    --accent: #2c4a7c;
+    --accent-strong: #1c3257;
+    --accent-soft: #e2e9f4;
+    --good: #3a7a4f;
+    --good-bg: #e2f0e5;
+    --bad: #bd3d1f;
+    --bad-bg: #fbe6df;
+    --focus-ring: rgba(44, 74, 124, 0.35);
+    --shadow: 0 14px 34px rgba(28, 34, 48, 0.10);
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #14151c;
-      --panel: #1e2029;
-      --text: #edeef2;
-      --muted: #9aa0ad;
-      --accent: #60a5fa;
-      --accent-dark: #3b82f6;
-      --good: #4ade80;
-      --good-bg: #14321f;
-      --bad: #f87171;
-      --bad-bg: #3a1616;
-      --border: #2c2e3a;
-      --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    :root:not([data-theme="light"]) {
+      --paper: #11141a;
+      --grid-line: rgba(255, 255, 255, 0.055);
+      --card: #1a1f28;
+      --card-border: rgba(255, 255, 255, 0.10);
+      --ink: #e7e9ee;
+      --muted: #9aa3b4;
+      --accent: #83a4d4;
+      --accent-strong: #a5c1e8;
+      --accent-soft: #223046;
+      --good: #74c088;
+      --good-bg: #163120;
+      --bad: #e2805f;
+      --bad-bg: #3a2016;
+      --focus-ring: rgba(131, 164, 212, 0.4);
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
     }
   }
+  :root[data-theme="dark"] {
+    --paper: #11141a;
+    --grid-line: rgba(255, 255, 255, 0.055);
+    --card: #1a1f28;
+    --card-border: rgba(255, 255, 255, 0.10);
+    --ink: #e7e9ee;
+    --muted: #9aa3b4;
+    --accent: #83a4d4;
+    --accent-strong: #a5c1e8;
+    --accent-soft: #223046;
+    --good: #74c088;
+    --good-bg: #163120;
+    --bad: #e2805f;
+    --bad-bg: #3a2016;
+    --focus-ring: rgba(131, 164, 212, 0.4);
+    --shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  }
+
   * { box-sizing: border-box; }
+
   body {
     margin: 0;
-    font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: "Hiragino Sans", "Yu Gothic Medium", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 26px 26px;
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    padding: 24px 16px 60px;
+    padding: 28px 16px 60px;
   }
-  .app {
-    width: 100%;
-    max-width: 640px;
+
+  .app { width: 100%; max-width: 620px; }
+
+  .masthead {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 6px 0 6px;
   }
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
     text-align: center;
-    margin: 8px 0 4px;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .stamp {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2.5px solid var(--bad);
+    color: var(--bad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    transform: rotate(-9deg);
+    opacity: 0.82;
+    writing-mode: vertical-rl;
+    user-select: none;
   }
   .subtitle {
     text-align: center;
     color: var(--muted);
-    font-size: 0.9rem;
-    margin-bottom: 24px;
+    font-size: 0.88rem;
+    margin-bottom: 26px;
   }
+  .subtitle .eq-sample {
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", "Cascadia Mono", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
   .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
     box-shadow: var(--shadow);
-    padding: 24px;
+    padding: 26px 24px;
     margin-bottom: 16px;
   }
   .screen { display: none; }
   .screen.active { display: block; }
 
   /* --- Setup screen --- */
-  fieldset {
-    border: none;
-    padding: 0;
-    margin: 0 0 20px;
-  }
+  fieldset { border: none; padding: 0; margin: 0 0 22px; }
   legend {
     font-weight: 700;
     margin-bottom: 10px;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
   .option-grid {
     display: grid;
@@ -89,53 +150,61 @@
     gap: 8px;
   }
   .option-btn {
-    padding: 10px 8px;
-    border-radius: 10px;
-    border: 2px solid var(--border);
-    background: var(--panel);
-    color: var(--text);
+    padding: 11px 8px;
+    border-radius: 8px;
+    border: 1.5px solid var(--card-border);
+    background: transparent;
+    color: var(--ink);
     font-size: 0.9rem;
     cursor: pointer;
     text-align: center;
     transition: border-color .15s, background .15s;
   }
+  .option-btn:focus-visible,
+  .primary-btn:focus-visible,
+  .secondary-btn:focus-visible,
+  #answerInput:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
   .option-btn.selected {
     border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 14%, var(--panel));
+    background: var(--accent-soft);
     font-weight: 700;
   }
   .option-btn small {
     display: block;
     color: var(--muted);
     font-weight: 400;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     margin-top: 2px;
+    font-variant-numeric: tabular-nums;
   }
-  .option-btn.selected small { color: var(--text); opacity: .75; }
+  .option-btn.selected small { color: var(--ink); opacity: .8; }
 
   .primary-btn {
     width: 100%;
     padding: 14px;
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     font-weight: 700;
-    border-radius: 12px;
+    border-radius: 8px;
     border: none;
     background: var(--accent);
-    color: white;
+    color: #fdfdfb;
     cursor: pointer;
     transition: background .15s, transform .05s;
   }
-  .primary-btn:hover { background: var(--accent-dark); }
+  .primary-btn:hover { background: var(--accent-strong); }
   .primary-btn:active { transform: scale(0.98); }
   .secondary-btn {
     width: 100%;
     padding: 12px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    border-radius: 12px;
-    border: 2px solid var(--border);
+    border-radius: 8px;
+    border: 1.5px solid var(--card-border);
     background: transparent;
-    color: var(--text);
+    color: var(--ink);
     cursor: pointer;
     margin-top: 10px;
   }
@@ -144,17 +213,18 @@
   .hud {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    font-size: 0.85rem;
+    align-items: baseline;
+    font-size: 0.82rem;
     color: var(--muted);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    font-variant-numeric: tabular-nums;
   }
   .progress-bar {
-    height: 6px;
-    background: var(--border);
+    height: 5px;
+    background: var(--card-border);
     border-radius: 3px;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
   }
   .progress-fill {
     height: 100%;
@@ -163,49 +233,46 @@
   }
   .equation {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
-    font-size: 2.1rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin: 28px 0 30px;
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", "Cascadia Mono", monospace;
+    font-size: 2.3rem;
+    font-weight: 600;
+    margin: 26px 0 32px;
     font-variant-numeric: tabular-nums;
   }
   .equation .colon { color: var(--muted); font-weight: 400; }
-  .equation .eq { color: var(--muted); margin: 0 6px; font-weight: 400; }
+  .equation .eq { color: var(--muted); margin: 0 6px; font-weight: 400; font-size: 1.6rem; }
   .equation .x-box {
     color: var(--accent);
+    border-bottom: 3px solid var(--accent);
+    padding: 0 4px 2px;
   }
-  .answer-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
+  .answer-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  #submitBtn { flex: none; white-space: nowrap; }
   #answerInput {
     flex: 1;
+    min-width: 0;
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", "Cascadia Mono", monospace;
     font-size: 1.4rem;
     padding: 12px 14px;
-    border-radius: 12px;
-    border: 2px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
+    border-radius: 8px;
+    border: 1.5px solid var(--card-border);
+    background: var(--paper);
+    color: var(--ink);
     text-align: center;
     font-variant-numeric: tabular-nums;
-  }
-  #answerInput:focus {
-    outline: none;
-    border-color: var(--accent);
   }
   #answerInput.correct { border-color: var(--good); background: var(--good-bg); }
   #answerInput.wrong { border-color: var(--bad); background: var(--bad-bg); }
 
   .feedback {
     min-height: 54px;
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 10px 14px;
-    font-size: 0.95rem;
+    font-size: 0.94rem;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -215,18 +282,22 @@
   .feedback.show { visibility: visible; }
   .feedback.good { background: var(--good-bg); color: var(--good); }
   .feedback.bad { background: var(--bad-bg); color: var(--bad); }
-  .feedback .mark { font-size: 1.3rem; }
-  .feedback .detail { color: var(--text); opacity: .85; font-size: 0.85rem; }
+  .feedback .mark { font-size: 1.3rem; font-family: ui-monospace, monospace; }
+  .feedback .detail { color: var(--ink); opacity: .8; font-size: 0.83rem; font-variant-numeric: tabular-nums; }
 
   .toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 6px;
-    font-size: 0.85rem;
+    font-size: 0.83rem;
     color: var(--muted);
   }
   .toolbar label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  #timerDisplay {
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", "Cascadia Mono", monospace;
+    font-variant-numeric: tabular-nums;
+  }
 
   /* --- Result screen --- */
   .stat-grid {
@@ -236,49 +307,54 @@
     margin: 18px 0 22px;
   }
   .stat {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    background: var(--paper);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
     padding: 14px 8px;
     text-align: center;
   }
   .stat .num {
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", "Cascadia Mono", monospace;
     font-size: 1.5rem;
-    font-weight: 800;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
   }
-  .stat .label {
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
+  .stat .label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
   .missed-list {
     max-height: 220px;
     overflow-y: auto;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--card-border);
     padding-top: 10px;
   }
   .missed-item {
     display: flex;
     justify-content: space-between;
+    gap: 10px;
     padding: 8px 4px;
-    font-size: 0.9rem;
-    border-bottom: 1px dashed var(--border);
+    font-size: 0.88rem;
+    border-bottom: 1px dashed var(--card-border);
   }
-  .missed-item .eq-text { font-variant-numeric: tabular-nums; }
+  .missed-item .eq-text {
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", "Cascadia Mono", monospace;
+    font-variant-numeric: tabular-nums;
+  }
   .missed-item .your-ans { color: var(--bad); }
   .missed-item .right-ans { color: var(--good); font-weight: 700; }
-  .empty-missed {
-    text-align: center;
-    color: var(--muted);
-    padding: 12px 0;
-    font-size: 0.9rem;
+  .empty-missed { text-align: center; color: var(--muted); padding: 12px 0; font-size: 0.9rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .primary-btn, .option-btn, .progress-fill { transition: none; }
   }
 </style>
 </head>
 <body>
 <div class="app">
-  <h1>比例式 暗算トレーニング</h1>
-  <div class="subtitle">3&nbsp;:&nbsp;8 = 6&nbsp;:&nbsp;x のような比例式をすばやく解く練習</div>
+  <div class="masthead">
+    <h1>比例式 暗算トレーニング</h1>
+    <div class="stamp" aria-hidden="true">暗算</div>
+  </div>
+  <div class="subtitle"><span class="eq-sample">3:8 = 6:x</span> のような比例式をすばやく解く練習</div>
 
   <!-- SETUP SCREEN -->
   <div class="screen active" id="screen-setup">
@@ -346,7 +422,7 @@
   <!-- RESULT SCREEN -->
   <div class="screen" id="screen-result">
     <div class="card">
-      <h2 style="margin-top:0; text-align:center;">結果</h2>
+      <h2 style="margin-top:0; text-align:center; font-size:1.15rem;">結果</h2>
       <div class="stat-grid">
         <div class="stat"><div class="num" id="resAccuracy">0%</div><div class="label">正答率</div></div>
         <div class="stat"><div class="num" id="resCorrect">0/0</div><div class="label">正解数</div></div>
@@ -519,9 +595,6 @@
     awaitingNext = true;
     session.times.push(elapsed);
 
-    const eqText = current.numbers
-      .map((v, i) => (i === current.position ? "x" : v))
-      .join(",");
     const [a, b, c, d] = current.numbers;
 
     if (isCorrect) {
