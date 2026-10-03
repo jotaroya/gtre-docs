@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>統一テスト語彙ドリル</title>
+<meta name="description" content="統一テスト対策プリント（読み・書き・意味・カタカナ語）の全530問をカードと4択で練習できるドリル。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: 一列のドリル帳。上に固定バー、中央にカード、下に採点ボタン。答案用紙の罫と朱の丸付けがモチーフ */
+:root{
+  --paper:#f7f8f6;      /* 答案用紙の白 */
+  --sheet:#ffffff;
+  --ink:#1d2430;        /* 墨 */
+  --ink-2:#5b6474;
+  --rule:#d9dee3;       /* 罫線 */
+  --kon:#27407a;        /* 紺：アクセント */
+  --kon-soft:#e6ebf6;
+  --shu:#c8402e;        /* 朱：×と傍線 */
+  --shu-soft:#fbe9e5;
+  --ok:#2f7d55;
+  --ok-soft:#e3f2ea;
+  --warn:#b7791f;
+  --warn-soft:#fbf1dd;
+  --unseen:#e9ecef;
+  --f-display:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-ui:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#14171c;--sheet:#1c2027;--ink:#e8eaee;--ink-2:#a3abb8;--rule:#323844;
+  --kon:#8fa8e8;--kon-soft:#232c42;--shu:#f08a78;--shu-soft:#3a2420;
+  --ok:#6fcf9a;--ok-soft:#1d3328;--warn:#e7b260;--warn-soft:#3a2f1c;--unseen:#2a2f38;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#14171c;--sheet:#1c2027;--ink:#e8eaee;--ink-2:#a3abb8;--rule:#323844;
+  --kon:#8fa8e8;--kon-soft:#232c42;--shu:#f08a78;--shu-soft:#3a2420;
+  --ok:#6fcf9a;--ok-soft:#1d3328;--warn:#e7b260;--warn-soft:#3a2f1c;--unseen:#2a2f38;color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.6;margin:0;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--kon);outline-offset:2px}
+.wrap{max-width:680px;margin:0 auto;padding-inline:16px;padding-block:0 48px}
+.num{font-variant-numeric:tabular-nums}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+.bar .in{max-width:680px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.bar h1{font-family:var(--f-display);font-size:18px;margin:0;font-weight:700;letter-spacing:.04em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:520px){.bar h1 small{display:none}}
+.bar h1 small{font-family:var(--f-ui);font-weight:500;font-size:12px;color:var(--ink-2);margin-left:6px;letter-spacing:0}
+.iconbtn{border:1px solid var(--rule);background:var(--sheet);border-radius:999px;padding:6px 12px;font-size:13px}
+.today{font-size:12px;color:var(--ink-2);white-space:nowrap}
+.today b{color:var(--kon);font-size:15px}
+
+/* home */
+.lead{padding-block:18px 6px;color:var(--ink-2);font-size:13px}
+.test{margin-top:18px}
+.test h2{font-family:var(--f-display);font-size:15px;margin:0 0 8px;letter-spacing:.08em;color:var(--ink-2);font-weight:500}
+.sets{display:grid;gap:10px}
+.set{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;text-align:left;width:100%}
+.set:hover{border-color:var(--kon)}
+.set .nm{font-family:var(--f-display);font-size:19px;font-weight:700}
+.set .nm span{font-family:var(--f-ui);font-size:12px;color:var(--ink-2);font-weight:400;margin-left:8px}
+.set .pct{font-size:22px;font-weight:700;color:var(--kon);text-align:right;line-height:1}
+.set .pct small{display:block;font-size:11px;color:var(--ink-2);font-weight:400;margin-top:4px}
+.meter{grid-column:1/-1;display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--unseen)}
+.meter i{display:block;height:100%}
+.m-ok{background:var(--ok)}.m-mid{background:var(--warn)}.m-ng{background:var(--shu)}
+.legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--ink-2)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;vertical-align:0}
+
+/* set page */
+.back{background:none;border:0;color:var(--kon);padding:14px 0 4px;font-size:14px}
+.sethead h2{font-family:var(--f-display);font-size:26px;margin:4px 0 2px}
+.sethead p{margin:0;color:var(--ink-2);font-size:13px}
+.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:16px;margin-top:14px}
+.panel h3{font-size:13px;margin:0 0 10px;color:var(--ink-2);font-weight:500;letter-spacing:.06em}
+.seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.opt{border:1px solid var(--rule);background:var(--paper);border-radius:10px;padding:10px 12px;text-align:left}
+.opt b{display:block;font-size:15px}
+.opt span{font-size:12px;color:var(--ink-2);line-height:1.4;display:block}
+.opt[aria-pressed="true"]{border-color:var(--kon);background:var(--kon-soft);box-shadow:inset 0 0 0 1px var(--kon)}
+.opt:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-top:12px;font-size:14px}
+.row label{display:flex;align-items:center;gap:6px}
+select,input[type=number]{font:inherit;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:8px;padding:6px 8px}
+input[type=number]{width:5.2em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--rule);background:var(--paper);border-radius:999px;padding:5px 12px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--kon);border-color:var(--kon);color:var(--sheet)}
+.start{margin-top:16px;width:100%;border:0;background:var(--kon);color:var(--sheet);font-size:17px;font-weight:700;border-radius:12px;padding:14px;letter-spacing:.1em}
+.start:disabled{opacity:.4}
+.hint{font-size:12px;color:var(--ink-2);margin-top:8px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px}
+.cell{aspect-ratio:1;max-width:100%;border:0;border-radius:6px;font-size:11px;background:var(--unseen);color:var(--ink-2);padding:0}
+.cell.ok{background:var(--ok);color:var(--sheet)}
+.cell.mid{background:var(--warn);color:var(--sheet)}
+.cell.ng{background:var(--shu);color:var(--sheet)}
+
+.list{margin-top:10px;display:grid;gap:0}
+.li{display:grid;grid-template-columns:2.6em 1fr;gap:4px 10px;padding:10px 0;border-top:1px solid var(--rule);align-items:baseline}
+.li .n{color:var(--ink-2);font-size:12px;text-align:right}
+.li .q{font-family:var(--f-display);font-size:16px;min-width:0}
+.li .a{grid-column:2;font-size:15px;color:var(--shu);font-weight:700;min-width:0}
+.li .a.hide{color:transparent;background:var(--shu-soft);border-radius:4px;cursor:pointer;user-select:none}
+.li .a.hide::after{content:"タップで表示";color:var(--shu);font-size:11px;font-weight:400}
+.li .a .ref{color:var(--ink-2);font-weight:400;font-size:11px;margin-left:8px}
+.li.flash{background:var(--kon-soft)}
+
+/* drill */
+.drill{display:flex;flex-direction:column;min-height:calc(100dvh - 60px);padding-block:12px 16px}
+.dtop{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+.prog{flex:1;height:6px;background:var(--unseen);border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--kon);transition:width .2s}
+.quit{background:none;border:0;color:var(--ink-2);font-size:13px;padding:4px}
+.card{position:relative;margin-top:14px;background:var(--sheet);border:1px solid var(--rule);border-radius:16px;padding:20px 18px 18px;min-height:280px;display:flex;flex-direction:column;cursor:pointer}
+.card.choice{cursor:default}
+.cmeta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-2)}
+.hist{display:flex;gap:3px;align-items:center}
+.hist i{width:7px;height:7px;border-radius:50%;background:var(--unseen)}
+.hist i.o{background:var(--ok)}.hist i.x{background:var(--shu)}
+.sent{flex:1;display:flex;align-items:center;justify-content:center;padding:18px 4px;font-family:var(--f-display);font-size:clamp(20px,5.6vw,26px);line-height:2.1;text-align:left}
+.sent>div{min-width:0}
+.sent.tate>div{writing-mode:vertical-rl;height:min(15em,52dvh);line-height:1.9;text-align:start}
+.bl{text-decoration:underline;text-decoration-color:var(--shu);text-decoration-thickness:2px;text-underline-offset:.28em;font-weight:700}
+.tate .bl{text-underline-position:right}
+.word{font-size:clamp(30px,9vw,40px);font-weight:700;letter-spacing:.06em;text-align:center}
+rt{font-size:.5em;font-family:var(--f-ui);color:var(--ink-2)}
+.bl rt{color:var(--shu);font-weight:700}
+.ans{border-top:2px dashed var(--rule);padding-top:12px;text-align:center}
+.ans .big{font-family:var(--f-display);font-size:clamp(26px,8vw,34px);font-weight:700;color:var(--shu);line-height:1.4}
+.ans .ref{font-size:12px;color:var(--ink-2)}
+.tap{text-align:center;color:var(--ink-2);font-size:13px;border-top:2px dashed var(--rule);padding-top:12px}
+.card.flipin .ans{animation:pop .25s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.stamp{position:absolute;right:14px;top:34px;font-family:var(--f-display);font-size:64px;line-height:1;font-weight:700;pointer-events:none;animation:stamp .25s ease-out}
+.stamp.o{color:var(--shu)}.stamp.x{color:var(--kon)}
+@keyframes stamp{from{transform:scale(1.6);opacity:0}to{transform:none;opacity:.9}}
+@media (prefers-reduced-motion:reduce){.card.flipin .ans,.stamp{animation:none}}
+
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.grade button{border:0;border-radius:14px;padding:16px 8px;font-size:17px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px}
+.grade .x{background:var(--kon-soft);color:var(--kon)}
+.grade .o{background:var(--shu-soft);color:var(--shu)}
+.grade small{font-size:11px;font-weight:400;opacity:.8}
+.flipbtn{margin-top:14px;width:100%;border:1px solid var(--kon);background:var(--sheet);color:var(--kon);border-radius:14px;padding:16px;font-size:17px;font-weight:700}
+.choices{display:grid;gap:8px;margin-top:12px}
+.ch{text-align:left;border:1px solid var(--rule);background:var(--paper);border-radius:12px;padding:12px 14px;font-size:15px;display:grid;grid-template-columns:1.6em 1fr;gap:6px;line-height:1.5}
+.ch .k{color:var(--ink-2);font-weight:700}
+.ch.right{border-color:var(--ok);background:var(--ok-soft)}
+.ch.wrong{border-color:var(--shu);background:var(--shu-soft)}
+.ch:disabled{cursor:default;color:var(--ink)}
+.next{margin-top:12px;width:100%;border:0;background:var(--kon);color:var(--sheet);border-radius:14px;padding:15px;font-size:17px;font-weight:700}
+.tools{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:12px;color:var(--ink-2)}
+.tools button{background:none;border:0;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;padding:4px}
+.kbd{display:none}
+@media (hover:hover) and (pointer:fine){.kbd{display:inline}}
+
+/* 手書きメモ */
+.pad{margin-top:12px;background:var(--sheet);border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.pad canvas{display:block;width:100%;height:150px;touch-action:none;background-image:linear-gradient(90deg,transparent calc(50% - .5px),var(--rule) calc(50% - .5px),var(--rule) calc(50% + .5px),transparent calc(50% + .5px))}
+.pad .ph{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:var(--ink-2);border-top:1px solid var(--rule)}
+.pad .ph button{background:none;border:1px solid var(--rule);border-radius:999px;padding:3px 10px;font-size:12px}
+
+/* result */
+.res h2{font-family:var(--f-display);font-size:24px;margin:18px 0 4px}
+.score{display:flex;align-items:baseline;gap:10px;margin:8px 0 4px}
+.score b{font-family:var(--f-display);font-size:56px;color:var(--shu);line-height:1}
+.score span{color:var(--ink-2)}
+.btns{display:grid;gap:8px;margin-top:14px}
+.btn2{border:1px solid var(--kon);background:var(--sheet);color:var(--kon);border-radius:12px;padding:13px;font-size:15px;font-weight:700}
+.btn2.solid{background:var(--kon);color:var(--sheet)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(10,14,22,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px}
+.sheet{background:var(--sheet);color:var(--ink);border-radius:16px;max-width:520px;width:100%;padding:18px;max-height:85dvh;overflow:auto}
+.sheet h3{margin:0 0 10px;font-family:var(--f-display);font-size:19px}
+.sheet .row{margin-top:10px}
+.danger{border:1px solid var(--shu);color:var(--shu);background:none;border-radius:10px;padding:9px 14px}
+.danger.solid{background:var(--shu);color:var(--sheet)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:999px;font-size:13px;z-index:30}
+</style>
+</head>
+<body>
+
+
+<div class="bar"><div class="in">
+  <h1 id="ttl">統一テスト語彙ドリル<small>入試頻出漢字＋現代文重要語彙TOP2500</small></h1>
+  <span class="today num" id="today"></span>
+  <button class="iconbtn" id="setBtn" type="button" aria-label="設定">設定</button>
+</div></div>
+<main class="wrap" id="app"></main>
+<div id="modal" hidden></div>
+<div id="toast" class="toast" hidden></div>
+
+<script id="qdata" type="application/json">[{"id":"yomi","name":"読み","test":"第2回","kind":"written","range":"P84〜P91","note":"範囲の読みをすべて練習できます。この中から問題が出ます。","items":[{"q":"矛盾する思想が[渾然]として存在している。","a":"こんぜん","ref":"P85-25"},{"q":"敵対者からは悪の[権化]のように言われる。","a":"ごんげ","ref":"P90-3"},{"q":"矛盾を[孕]んだ主張には誰も耳を貸そうとしない。","a":"はら","ref":"P85-22"},{"q":"無邪気な好奇心というものは[稀]である。","a":"まれ","ref":"P84-4"},{"q":"改革に賛同する者が[漸次]増加しつつある。","a":"ぜんじ","ref":"P88-10"},{"q":"社会の[趨勢]を押しとどめることはできない。","a":"すうせい","ref":"P86-1"},{"q":"新製品の[熾烈]な販売競争が繰り広げられた。","a":"しれつ","ref":"P84-3"},{"q":"学問的な根拠のない[偏]った俗説を信じる。","a":"かたよ","ref":"P85-21"},{"q":"大臣の不正を[弾劾]すべく立ち上がった。","a":"だんがい","ref":"P88-5"},{"q":"師匠の人柄を[慕]って全国から人が集まる。","a":"した","ref":"P90-12"},{"q":"あることないこと言いふらされて[甚]だ迷惑だ。","a":"はなは","ref":"P85-13"},{"q":"大空に[屹立]する富士山を遠くから仰ぎ見る。","a":"きつりつ","ref":"P85-24"},{"q":"少し休憩してから夕食の[支度]にとりかかる。","a":"したく","ref":"P89-16"},{"q":"日々生産される[夥]しい量の商品を出荷する。","a":"おびただ","ref":"P85-20"},{"q":"小説が売れて作家の生活に[潤]いを与えた。","a":"うるお","ref":"P85-14"},{"q":"入念に調整して[盤石]の備えで試合に臨む。","a":"ばんじゃく","ref":"P88-12"},{"q":"トイレの落書きは誰の[仕業]かわからない。","a":"しわざ","ref":"P87-15"},{"q":"少しでも[侮]れば、どの対戦相手にも敗北する。","a":"あなど","ref":"P90-7"},{"q":"警察犬の[嗅覚]は捜査に非常に役立っている。","a":"きゅうかく","ref":"P88-2"},{"q":"この絵は[不朽]の名作として人心をとらえてきた。","a":"ふきゅう","ref":"P85-17"},{"q":"他者への無関心が[蔓延]する現代に警鐘を鳴らす。","a":"まんえん","ref":"P91-13"},{"q":"彼女は軽く[会釈]をして部屋から出て行った。","a":"えしゃく","ref":"P90-2"},{"q":"[尋常]の方法では解決することが難しい。","a":"じんじょう","ref":"P88-4"},{"q":"[浅薄]な知識しか持ち合わせていなかった。","a":"せんぱく","ref":"P84-8"},{"q":"心の[和]む光景を目の当たりにして微笑する。","a":"なご","ref":"P86-6"},{"q":"和歌には雪を花にたとえたものが[際立]って多い。","a":"きわだ","ref":"P91-15"},{"q":"頭から苑りつけずに親身になって[諭]す。","a":"さと","ref":"P85-16"},{"q":"不祥事を起こした大臣がすぐに[更迭]された。","a":"こうてつ","ref":"P84-6"},{"q":"朝日に照らされた木の葉から朝露が[滴]り落ちる。","a":"したた","ref":"P86-4"},{"q":"頭の中の[鋳型]にはめて世の中の現象を解釈する。","a":"いがた","ref":"P86-3"},{"q":"恩師の言葉を何度も胸の中で[反芻]する。","a":"はんすう","ref":"P87-20"},{"q":"組織が[惰性]で動くようになってはおしまいだ。","a":"だせい","ref":"P88-6"},{"q":"最短の道を行くのが無理なら[迂回]もやむなしだ。","a":"うかい","ref":"P91-19"},{"q":"五穀[豊穣]を願って神々に祈り捧{ささ}げる。","a":"ほうじょう","ref":"P88-1"},{"q":"台風の日には[所詮]傘など役に立たない。","a":"しょせん","ref":"P89-19"},{"q":"人間は常に自己変革を[怠]ってはならない。","a":"おこた","ref":"P89-23"},{"q":"その場をなんとかうまく[繕]ってごまかした。","a":"つくろ","ref":"P84-11"},{"q":"作家の日常生活における[挿話]を読んで楽しむ。","a":"そうわ","ref":"P85-19"},{"q":"社員の競争心を[煽]って成果を出させる。","a":"あお","ref":"P87-17"},{"q":"妹の[奏]でるピアノの音が階下から聞こえる。","a":"かな","ref":"P88-11"},{"q":"貴重な書物が床に[無造作]に積まれている。","a":"むぞうさ","ref":"P89-13"},{"q":"王は優れた資質を持ち宰相は知略に[長]けている。","a":"た","ref":"P87-16"},{"q":"武道の修練を通じて人格の[陶冶]をめざす。","a":"とうや","ref":"P86-5"},{"q":"彼女といる時の彼はいつになく[饒舌]だった。","a":"じょうぜつ","ref":"P86-9"},{"q":"自然は人間が予想するよりずっと[強靱]である。","a":"きょうじん","ref":"P87-22"},{"q":"あらゆる機会を[捉]えて新製品の売り込みを図る。","a":"とら","ref":"P90-11"},{"q":"日曜日には教会で[敬虔]な祈りを捧{ささ}げる。","a":"けいけん","ref":"P87-19"},{"q":"疲労のあまり頭が[朦朧]とした状態になった。","a":"もうろう","ref":"P91-22"},{"q":"恋を[成就]させるためにあらゆる手段を講じる。","a":"じょうじゅ","ref":"P84-5"},{"q":"成果を出しても報われないと不満が[募]る。","a":"つの","ref":"P85-15"},{"q":"何代にもわたって保持してきた特権を[剥奪]する。","a":"はくだつ","ref":"P91-23"},{"q":"祖父からもらったお守りが[懐]の中にある。","a":"ふところ","ref":"P88-8"},{"q":"わざと人を[貶]めるような言い方をする。","a":"おとし","ref":"P85-18"},{"q":"[閉塞]感が指摘されている今日の日本社会。","a":"へいそく","ref":"P84-10"},{"q":"国家の基盤はいまだ[脆弱]なままである。","a":"ぜいじゃく","ref":"P86-11"},{"q":"つまらない[代物]に芸術の名を与えてはならない。","a":"しろもの","ref":"P86-2"},{"q":"子孫は代々先祖の[供養]を欠かさずに行う。","a":"くよう","ref":"P88-7"},{"q":"上司に提出する企画書の[体裁]を整える。","a":"ていさい","ref":"P88-3"},{"q":"祖母はいつも私を優しく[慈]しんでくれた。","a":"いつく","ref":"P90-5"},{"q":"不遇の賢者に対し尊敬と[憐憫]の情を持った。","a":"れんびん","ref":"P86-12"},{"q":"第三者的立場から全体の流れを[俯瞰]する。","a":"ふかん","ref":"P86-8"},{"q":"新キャプテンがチームをよく[牽引]している。","a":"けんいん","ref":"P91-14"},{"q":"問題をわざと[矮小]化してとらえようとする。","a":"わいしょう","ref":"P91-18"},{"q":"人間関係をつなぐ精神的[紐帯]を重視する。","a":"ちゅうたい（じゅうたい）","ref":"P91-20"},{"q":"渾{こん}身{しん}の処女作が[辛辣]な批判にさらされた。","a":"しんらつ","ref":"P91-17"},{"q":"宮{みや}沢{ざわ}賢{けん}治{じ}は短い生涯の中で[珠玉]の作品を書いた。","a":"しゅぎょく","ref":"P89-20"},{"q":"何とも言えない[寂寥]感が忍び寄ってくる。","a":"せきりょう","ref":"P87-21"},{"q":"ポケットからハンカチを出して汗を[拭]う。","a":"ぬぐ","ref":"P90-9"},{"q":"むやみに外国の真似をするのは[滑稽]である。","a":"こっけい","ref":"P84-12"},{"q":"[緩]い上り坂で車が立ち往生してしまった。","a":"ゆる","ref":"P89-15"},{"q":"壮大な自然の力に対する[畏敬]の念が強い。","a":"いけい","ref":"P84-7"},{"q":"変革は[漸進]的に行われて成功を収めた。","a":"ぜんしん","ref":"P90-10"},{"q":"歴史の[相貌]を示すひとこまを見事に描き出す。","a":"そうぼう","ref":"P89-22"},{"q":"今でも階級社会の[残滓]が残っているようだ。","a":"ざんし（ざんさい）","ref":"P87-23"},{"q":"都市緑化の必要性が[声高]に叫ばれている。","a":"こわだか","ref":"P87-18"},{"q":"成果をあげることもなく[虚]しく時間が過ぎる。","a":"むな","ref":"P91-21"},{"q":"方言の言葉の響きに心が強く[惹]かれた。","a":"ひ","ref":"P87-24"},{"q":"[殺戮]兵器の製造に断固として反対する。","a":"さつりく","ref":"P87-14"},{"q":"倫理が厳しく問われるのは[必定]である。","a":"ひつじょう","ref":"P90-1"},{"q":"全知全能の神がこの世界を[統]べている。","a":"す","ref":"P91-24"},{"q":"[侵]すべからざる権威が厳然として存在する。","a":"おか","ref":"P91-16"},{"q":"[倦]まず弛{たゆ}まず努力してついに成功した。","a":"う","ref":"P87-25"},{"q":"外来語が日本語の[語彙]の中に流入してくる。","a":"ごい","ref":"P85-23"},{"q":"関心は[専]ら日常生活の領域に絞られている。","a":"もっぱ","ref":"P86-10"},{"q":"会を運営する費用はすべて寄付で[賄]われている。","a":"まかな","ref":"P86-7"},{"q":"病気が[重篤]な状態になってから入院した。","a":"じゅうとく","ref":"P89-21"},{"q":"[煩]わしい手続きを簡略化することを考える。","a":"わずら","ref":"P89-18"},{"q":"現場の判断に[委]ねる方が事はうまく運ぶ。","a":"ゆだ","ref":"P84-9"},{"q":"過去には軍国主義が[鼓吹]された時代があった。","a":"こすい","ref":"P90-4"},{"q":"平安朝の貴族は深く仏道に[帰依]していた。","a":"きえ","ref":"P89-24"},{"q":"神社や寺の[境内]は子どものよい遊び場だ。","a":"けいだい","ref":"P88-9"},{"q":"無事の知らせを聞いて[安堵]の胸をなでおろした。","a":"あんど","ref":"P84-2"},{"q":"古い考えにとらわれず自由[闊達]に振る舞う。","a":"かったつ","ref":"P89-25"},{"q":"趣味のために時間を[割]くのは苦にならない。","a":"さ","ref":"P89-14"},{"q":"[刹那]の快楽を追い求めるのは虚{むな}しいと知る。","a":"せつな","ref":"P87-13"},{"q":"よい師に巡り会えた喜びが[湧]いてくる。","a":"わ","ref":"P90-8"},{"q":"思わぬ敗北を喫して[呆然]とするしかなかった。","a":"ぼうぜん","ref":"P84-1"},{"q":"[固唾]を呑{の}んで試合の成り行きを見守る。","a":"かたず","ref":"P91-25"},{"q":"最初に必要な費用を[大雑把]に計算してみる。","a":"おおざっぱ","ref":"P90-6"},{"q":"現場での規律の[弛緩]を目の当たりにする。","a":"しかん","ref":"P89-17"}]},{"id":"kaki1","name":"書き①","test":"第2回","kind":"written","range":"P52〜P75","note":"範囲の漢字の半分をランダムで練習できます。","items":[{"q":"[キバツ]ないでたちが周囲の人々を驚かせた。","a":"奇抜","ref":"P52-9"},{"q":"師は長い年月にわたって人々の[モハン]となった。","a":"模範（摸範）","ref":"P56-12"},{"q":"日本各地に[ヘンザイ]する伝説を研究する。","a":"遍在","ref":"P68-6"},{"q":"捕らわれた武将が地下牢{ろう}に[ユウヘイ]された。","a":"幽閉","ref":"P52-8"},{"q":"我が国の富は長い歴史的発展の[ショサン]である。","a":"所産","ref":"P62-12"},{"q":"駅周辺には高層ビルが[リンリツ]している。","a":"林立","ref":"P64-9"},{"q":"水に落とした墨が[カクサン]して模様を作る。","a":"拡散","ref":"P59-17"},{"q":"生得的な言語というものがあると[ソウテイ]する。","a":"想定","ref":"P75-24"},{"q":"地震の大きさを示す[シヒョウ]には二種類ある。","a":"指標","ref":"P74-8"},{"q":"特別措置法は国会で[ケイゾク]審議となった。","a":"継続","ref":"P66-4"},{"q":"表現力の豊かさに[キョウタン]せざるを得ない。","a":"驚嘆","ref":"P60-5"},{"q":"本番直前の極度の緊張から[キョドウ]不審になる。","a":"挙動","ref":"P73-24"},{"q":"若年層に[ショウジュン]を合わせて宣伝をする。","a":"照準","ref":"P68-8"},{"q":"計画の目的や実現の可能性を[カンアン]する。","a":"勘案","ref":"P52-12"},{"q":"誤訳は、基礎的な知識がないことに[キイン]する。","a":"起因（基因）","ref":"P61-17"},{"q":"早く手を打たないと事態が悪化する[キグ]がある。","a":"危惧","ref":"P60-4"},{"q":"留学費用を自分で[フタン]することにした。","a":"負担","ref":"P75-22"},{"q":"新製品が[キョウイ]的な売上を記録した。","a":"驚異","ref":"P63-21"},{"q":"彼の作品は独創的で、他の[ツイズイ]を許さない。","a":"追随","ref":"P69-20"},{"q":"現代社会は多くの問題を[ホウガン]している。","a":"包含","ref":"P59-21"},{"q":"[ケッシュツ]しているが故に理解されない。","a":"傑出","ref":"P70-3"},{"q":"王に不満を持つ者が反乱を[カクサク]していた。","a":"画策","ref":"P62-11"},{"q":"年の節目を祝う[シュウゾク]は今も残る。","a":"習俗","ref":"P67-19"},{"q":"現場の状況を[ショウアク]しなければならない。","a":"掌握","ref":"P54-5"},{"q":"質素と[ケンヤク]ばかりでは息が詰まりそうだ。","a":"倹約","ref":"P57-17"},{"q":"新しい武器の[イリョク]を見せつけられた。","a":"威力","ref":"P70-7"},{"q":"明治維新後に混乱と[フンキュウ]が生じた。","a":"紛糾","ref":"P56-4"},{"q":"被害[モウソウ]をすぐに取り除くのは難しい。","a":"妄想","ref":"P58-7"},{"q":"幼児は身の回りの物に[シュウチャク]を示す。","a":"執着","ref":"P75-20"},{"q":"資料を[サンショウ]しつつレポートをまとめる。","a":"参照","ref":"P59-19"},{"q":"格差社会では機会の平等が[ソコ]なわれる。","a":"損","ref":"P54-9"},{"q":"悪路には四輪[クドウ]の車が最適である。","a":"駆動","ref":"P71-19"},{"q":"資本家が[リジュン]を最大化する戦略を練る。","a":"利潤","ref":"P57-22"},{"q":"[コイ]に勝ちを譲られてもうれしくはない。","a":"故意","ref":"P73-17"},{"q":"街頭演説を聞いて深い[カンメイ]を受けた。","a":"感銘（肝銘）","ref":"P70-5"},{"q":"休日だというのに町の中は[カンサン]としている。","a":"閑散","ref":"P54-4"},{"q":"匠{たくみ}は高度な[ジュクレン]のわざを持っている。","a":"熟練","ref":"P73-14"},{"q":"地域社会への[ホウシ]活動に継続的に参加する。","a":"奉仕","ref":"P60-10"},{"q":"時代遅れにならないかと[ショウソウ]にかられる。","a":"焦燥","ref":"P52-7"},{"q":"貿易赤字と財政赤字が両方とも[フク]らむ。","a":"膨","ref":"P61-23"},{"q":"[キハツ]性の液体の取り扱いには注意を要する。","a":"揮発","ref":"P57-18"},{"q":"目標に[トウタツ]するために努力を重ねる。","a":"到達","ref":"P55-15"},{"q":"独立を果たして国民全体が[カンキ]に包まれた。","a":"歓喜","ref":"P60-11"},{"q":"西洋では結婚は長らく教会の[カンカツ]であった。","a":"管轄","ref":"P52-6"},{"q":"今までの[ホンポウ]な生活に終止符を打つ。","a":"奔放","ref":"P63-24"},{"q":"[ヘンキョウ]な価値観を振りかざす者を避ける。","a":"偏狭","ref":"P58-3"},{"q":"何の[ヘンテツ]もない景色になぜか心がひかれる。","a":"変哲","ref":"P65-23"},{"q":"「官から民へ」というスローガンを[カカ]げる。","a":"掲","ref":"P54-7"},{"q":"恋人のわがままを[キョヨウ]することもある。","a":"許容","ref":"P66-1"},{"q":"論文を[シッピツ]するための材料を集める。","a":"執筆","ref":"P64-8"},{"q":"農村の[カソ]化を食い止める方法を考える。","a":"過疎","ref":"P53-25"},{"q":"空前の規模の侵略と[シュウダツ]がおこなわれた。","a":"収奪","ref":"P59-13"},{"q":"山から見下ろすと[ソウゴン]な礼拝堂が見える。","a":"荘厳","ref":"P53-23"},{"q":"壊れかかった関係の[シュウフク]に手間取る。","a":"修復","ref":"P72-8"},{"q":"人としての[ソンゲン]を保ち、生をまっとうする。","a":"尊厳","ref":"P62-6"},{"q":"国民の支持率が高いので、政権は[アンタイ]だ。","a":"安泰","ref":"P66-7"},{"q":"降って湧いたような幸運に[トウワク]する。","a":"当惑","ref":"P62-2"},{"q":"社長が営業の陣頭に立って[シキ]をする。","a":"指揮","ref":"P55-25"},{"q":"郷土が生んだ偉人の[ケンショウ]碑を建立する。","a":"顕彰","ref":"P71-18"},{"q":"畑を荒らす獣を[ホカク]する仕掛けを作った。","a":"捕獲","ref":"P68-1"},{"q":"政府の方針に[コウギ]するデモが行われた。","a":"抗議","ref":"P75-14"},{"q":"世間の[フウチョウ]に惑わされてはいけない。","a":"風潮","ref":"P57-21"},{"q":"正義と秩序に基づく国際平和を[キキュウ]する。","a":"希求","ref":"P52-1"},{"q":"事件の[ホッタン]は感情的な行き違いである。","a":"発端","ref":"P53-19"},{"q":"地質の調査のため研究者が[ハケン]された。","a":"派遣","ref":"P58-9"},{"q":"いろいろな[カッコウ]でパレードに参加する。","a":"格好（恰好）","ref":"P61-16"},{"q":"[キョウキン]を開いてよく話し合うことが肝要だ。","a":"胸襟","ref":"P67-23"},{"q":"古くて役に立たなくなった資料を[ハイキ]する。","a":"廃棄","ref":"P75-17"},{"q":"ゴールの[シュンカン]に選手の顔がほころんだ。","a":"瞬間","ref":"P53-18"},{"q":"自然の[モウイ]の前には、人間は弱いものだ。","a":"猛威","ref":"P67-20"},{"q":"自由な時間は図書館で読書に[ボットウ]する。","a":"没頭","ref":"P67-24"},{"q":"汚濁を嫌って[ケッペキ]さを追い求める。","a":"潔癖","ref":"P55-13"},{"q":"社会への怒りが変革の活力へと[ショウカ]する。","a":"昇華","ref":"P53-16"},{"q":"僻{へき}地{ち}の村に出かけて[ムショウ]で住民を診察する。","a":"無償","ref":"P72-10"},{"q":"書物を速読するには黙読が[ゼンテイ]になる。","a":"前提","ref":"P69-18"},{"q":"権利を[コウシ]することに何のためらいもない。","a":"行使","ref":"P71-24"},{"q":"目次や[サクイン]を手がかりに調べ物をする。","a":"索引","ref":"P57-16"},{"q":"裁判の[バイシン]員を引き受けることになった。","a":"陪審","ref":"P54-1"},{"q":"科学者は自然を[セイギョ]できると考えた。","a":"制御","ref":"P58-1"},{"q":"歯並びの[キョウセイ]は子どものうちにしておく。","a":"矯正","ref":"P56-11"},{"q":"岸壁にはさまざまな方向に[キレツ]が走っている。","a":"亀裂","ref":"P63-18"},{"q":"成功するためには努力が[ヒッス]である。","a":"必須","ref":"P67-15"},{"q":"目下の状況では予算の[サクゲン]もやむなしだ。","a":"削減","ref":"P68-12"},{"q":"昔のことははるか[ボウキャク]の彼{かな}方{た}にある。","a":"忘却","ref":"P60-7"},{"q":"[トボ]しい食糧をめぐる争いが引き起こされる。","a":"乏","ref":"P75-18"},{"q":"一度表明された見解が[テッカイ]される。","a":"撤回","ref":"P72-2"},{"q":"[キセイ]のやり方にこだわらず柔軟に対処する。","a":"既成","ref":"P71-23"},{"q":"子どもの探究心や[ボウケン]心を育てたい。","a":"冒険","ref":"P66-9"},{"q":"工場の[カドウ]率は低い水準のままである。","a":"稼働（稼動）","ref":"P74-2"},{"q":"[シュビ]一貫した姿勢で問題解決に当たっている。","a":"首尾","ref":"P65-25"},{"q":"不正を見ると[ギフン]にかられて制止しようとする。","a":"義憤","ref":"P75-19"},{"q":"本人の気づかぬうちに悪事に[カタン]している。","a":"加担（荷担）","ref":"P65-22"},{"q":"野次を飛ばして会議の進行を[ボウガイ]する。","a":"妨害","ref":"P62-7"},{"q":"[ギジ]体験を繰り返して宇宙飛行の訓練をする。","a":"擬似（疑似）","ref":"P66-11"},{"q":"事態は予想外の[ヨウソウ]を呈している。","a":"様相","ref":"P55-24"},{"q":"いくつもの試練を[タク]みに乗り越えてきた。","a":"巧","ref":"P57-20"},{"q":"運営委員会の[サイリョウ]で賞状が授与される。","a":"裁量","ref":"P58-2"},{"q":"先生の話の[カンジン]なところを聞き逃した。","a":"肝心（肝腎）","ref":"P63-19"},{"q":"筋肉に[フカ]を与えることで筋力をつける。","a":"負荷","ref":"P60-9"},{"q":"[キフク]に富む人生を送った革命家の伝記を読む。","a":"起伏","ref":"P56-1"},{"q":"海底に沈んだといわれる財宝を[タンサク]する。","a":"探索","ref":"P60-6"},{"q":"熟慮を重ねた結果、申し入れを[キョヒ]した。","a":"拒否","ref":"P56-2"},{"q":"事情に精通した[センモン]家の意見を尊重する。","a":"専門","ref":"P75-23"},{"q":"改修により室内の[ソウショク]が一新された。","a":"装飾","ref":"P52-11"},{"q":"季節により特定の[シッカン]が多発する。","a":"疾患","ref":"P71-20"},{"q":"猫が相手を[イカク]するために背を丸めている。","a":"威嚇","ref":"P65-15"},{"q":"目を閉じれば故郷の情景が[ノウリ]に浮かぶ。","a":"脳裏（脳裡）","ref":"P54-3"},{"q":"伯父の[ケンジツ]な生き方を手本にする。","a":"堅実","ref":"P60-12"},{"q":"携帯電話会社が[コキャク]の獲得競争を展開する。","a":"顧客","ref":"P64-1"},{"q":"禁欲の時代の次に[キョウラク]の時代がくる。","a":"享楽","ref":"P57-13"},{"q":"音の[ラレツ]がしだいにリズムを帯びてくる。","a":"羅列","ref":"P68-2"},{"q":"転んでけがをした友人を[カイホウ]する。","a":"介抱","ref":"P74-5"},{"q":"終戦記念日には毎年平和を[キガン]する。","a":"祈願","ref":"P74-4"},{"q":"飲み水の確保が[セツジツ]な問題となっている。","a":"切実","ref":"P74-1"},{"q":"終身[コヨウ]制度や年功序列型賃金制度が崩れた。","a":"雇用","ref":"P66-5"},{"q":"心の内に[クウキョ]な部分をかかえている。","a":"空虚","ref":"P72-7"},{"q":"現代美術にとって[カッキテキ]な作品が生まれた。","a":"画期的","ref":"P54-12"},{"q":"人生の先輩の忠告は[ケイチョウ]に値する。","a":"傾聴","ref":"P71-25"},{"q":"[トウサク]した感情を持つ人物を演じる。","a":"倒錯","ref":"P60-3"},{"q":"組織拡大に[ズイハン]する問題がいろいろある。","a":"随伴","ref":"P66-3"},{"q":"独特の宇宙観を持つ思想に[キョウメイ]する。","a":"共鳴","ref":"P54-2"},{"q":"ドローンを[ソウジュウ]する腕を競い合う。","a":"操縦","ref":"P71-13"},{"q":"法律改定に[フズイ]する色々な問題が指摘された。","a":"付随（附随）","ref":"P60-1"},{"q":"国連の[カイニュウ]によって一時休戦が実現した。","a":"介入","ref":"P53-24"},{"q":"小学校の通学路では[ジョコウ]運転をする。","a":"徐行","ref":"P64-2"},{"q":"気をつけないと組織はすぐに[ヒダイ]化する。","a":"肥大","ref":"P61-14"},{"q":"山頂に到達すると急に[チョウボウ]が開けた。","a":"眺望","ref":"P56-3"},{"q":"[キョウリョウ]な小人物が重要な地位につく。","a":"狭量","ref":"P55-18"},{"q":"村おこしの[イッカン]として農業体験事業をする。","a":"一環","ref":"P59-15"},{"q":"地下にあった空洞が崩れて土地が[カンボツ]した。","a":"陥没","ref":"P71-16"},{"q":"言葉の感性を[ミガ]くために日々苦闘する。","a":"磨","ref":"P61-21"},{"q":"[アイサツ]することが人間関係の第一歩だ。","a":"挨拶","ref":"P73-20"},{"q":"毎日欠かすことなく運動して体を[キタ]える。","a":"鍛","ref":"P54-11"},{"q":"新政党が国政選挙に新人を[ヨウリツ]する。","a":"擁立","ref":"P69-14"},{"q":"提案を[キョゼツ]するのは得策とは思えない。","a":"拒絶","ref":"P67-17"},{"q":"突如得体のしれない不安に[オソ]われる。","a":"襲","ref":"P56-6"},{"q":"国際問題の[チュウサイ]役を買って出る。","a":"仲裁","ref":"P69-24"},{"q":"[イギ]を申し立てる人がいるかもしれない。","a":"異議","ref":"P58-4"},{"q":"コペルニクスは近代科学の[ソセキ]を築いた。","a":"礎石","ref":"P62-1"},{"q":"世論というものが[ゲンゼン]として存在する。","a":"厳然","ref":"P54-6"},{"q":"逆境にも負けない[キガイ]のある人が望まれる。","a":"気概","ref":"P62-8"},{"q":"職権乱用のかどにより会長を[ヒメン]する。","a":"罷免","ref":"P65-18"},{"q":"病院の待合室で待たされて[タイクツ]する。","a":"退屈","ref":"P61-24"},{"q":"建築資材の[タイキュウ]性を向上させる。","a":"耐久","ref":"P68-9"},{"q":"気分のよいときは公園を気ままに[サンサク]する。","a":"散策","ref":"P68-3"},{"q":"歌は世相を見事に[ハンエイ]する鏡である。","a":"反映","ref":"P64-11"},{"q":"はるかな国の[キョコウ]の物語を創造する。","a":"虚構","ref":"P65-21"},{"q":"[ショウガイ]を乗り越えて事業を成功させた。","a":"障害","ref":"P72-1"},{"q":"他人の思いなど一切[コリョ]しないという態度だ。","a":"顧慮","ref":"P54-8"},{"q":"気のせいかピアノの音が[ニゴ]って聞こえる。","a":"濁","ref":"P61-18"}]},{"id":"kaki2","name":"書き②","test":"第2回","kind":"written","range":"P136〜P159","note":"範囲の漢字の半分をランダムで練習できます。","items":[{"q":"難問が[サンセキ]して手の打ちようがない。","a":"山積","ref":"P138-5"},{"q":"敵との[ソウゼツ]な戦いの末に勝利を収めた。","a":"壮絶","ref":"P151-16"},{"q":"正当化する[ホウベン]を持ち合わせていない。","a":"方便","ref":"P156-9"},{"q":"小説を書くことは原稿用紙との[カクトウ]である。","a":"格闘","ref":"P151-14"},{"q":"人間は理性的に振る舞う動物だと[ソテイ]する。","a":"措定","ref":"P152-3"},{"q":"[ホウヨウ]力のある上司のもとで部下が育つ。","a":"包容","ref":"P146-1"},{"q":"決戦を控えた選手たちを[ゲキレイ]した。","a":"激励","ref":"P144-10"},{"q":"家具や[チョウド]品などに特にこだわりはない。","a":"調度","ref":"P136-4"},{"q":"大河が大平原を[ダコウ]して流れている。","a":"蛇行","ref":"P152-7"},{"q":"その[セイコウ]な口調に青年の気負いを感じた。","a":"生硬","ref":"P143-23"},{"q":"過去をないがしろにしてきた[ホウフク]を受ける。","a":"報復","ref":"P137-16"},{"q":"領空を[シンパン]しないコースを選んで飛行する。","a":"侵犯","ref":"P146-8"},{"q":"教会の[ジゼン]事業に多くの人が協力する。","a":"慈善","ref":"P152-9"},{"q":"兵力の配置を知るため空から[テイサツ]する。","a":"偵察","ref":"P159-25"},{"q":"最新型のテレビに美しい[エイゾウ]が流れている。","a":"映像","ref":"P144-6"},{"q":"無実の罪で投獄された人の[メイヨ]を回復する。","a":"名誉","ref":"P139-25"},{"q":"ちょっとした情報が[ケッコウ]役に立った。","a":"結構","ref":"P149-14"},{"q":"大人にはわからない子どもの[リョウブン]がある。","a":"領分","ref":"P142-6"},{"q":"ある種の虫は[セイジュク]すると体の色が変わる。","a":"成熟","ref":"P155-15"},{"q":"仕事の合間に各自の判断で[テキギ]休憩をとる。","a":"適宜","ref":"P138-12"},{"q":"生命の宿る[ワクセイ]が幾つあるかはわからない。","a":"惑星","ref":"P144-2"},{"q":"中継地を[ケイユ]して所要時間は八時間である。","a":"経由","ref":"P148-6"},{"q":"技術の[スイジュン]を引き上げる努力をする。","a":"水準","ref":"P153-19"},{"q":"消防設備および防火施設の[ササツ]が行われた。","a":"査察","ref":"P157-15"},{"q":"戦地から無事[セイカン]した人を祝福する。","a":"生還","ref":"P138-8"},{"q":"適切ではない表現が文章から[サクジョ]された。","a":"削除","ref":"P147-14"},{"q":"芸能人の年齢[サショウ]が話題になった。","a":"詐称","ref":"P148-10"},{"q":"父は朝から庭の草むしりに[ヨネン]がない。","a":"余念","ref":"P151-25"},{"q":"新人選手が野球界に[センプウ]を巻き起こす。","a":"旋風","ref":"P154-7"},{"q":"彼は慎み深く、生涯[セイヒン]な生活を貫いた。","a":"清貧","ref":"P145-24"},{"q":"[フモウ]な話し合いがいつ果てるともなく続く。","a":"不毛","ref":"P153-20"},{"q":"すべての生物は[サイボウ]から成っている。","a":"細胞","ref":"P158-7"},{"q":"契約書の[キサイ]事項を綿密に点検する。","a":"記載","ref":"P149-19"},{"q":"海水浴に行って肌が[カッショク]に日焼けした。","a":"褐色","ref":"P145-22"},{"q":"株価の下落が[リンカイ]点に達し、恐慌が始まる。","a":"臨界","ref":"P140-5"},{"q":"口座が凍結されて[ヨキン]が引き出せない。","a":"預金","ref":"P140-4"},{"q":"法律により判断するという原則を[カクリツ]する。","a":"確立","ref":"P141-20"},{"q":"技術[カクシン]が進んで生産性が向上した。","a":"革新","ref":"P153-21"},{"q":"球場の観客[ドウイン]数の記録が更新された。","a":"動員","ref":"P158-10"},{"q":"若者の[シンセン]なアイデアが世間を驚かす。","a":"新鮮","ref":"P157-25"},{"q":"[アセ]ったところで事態が好転するわけではない。","a":"焦","ref":"P149-23"},{"q":"人道主義に[リッキャク]して問題の打開を図る。","a":"立脚","ref":"P156-10"},{"q":"[ショサイ]にこもって一日中本を読んでいる。","a":"書斎","ref":"P157-17"},{"q":"主将の[イッカツ]でチームの雰囲気が変わった。","a":"一喝","ref":"P148-2"},{"q":"少数者が社会の中で[ユウエツ]的な地位を占める。","a":"優越","ref":"P136-6"},{"q":"町の中心部は古くからの店が[ノキ]を連ねている。","a":"軒","ref":"P142-2"},{"q":"長い年月の間に上下関係が[テントウ]した。","a":"転倒","ref":"P147-23"},{"q":"複数の村が[ヘイゴウ]して大規模な村になった。","a":"併合","ref":"P151-21"},{"q":"彼女のけなげな姿に誰もが[カンシン]した。","a":"感心","ref":"P159-24"},{"q":"時間と金を[マジュツ]のようにやりくりする。","a":"魔術","ref":"P139-24"},{"q":"支持率の低下は内閣にとって[チメイ]的である。","a":"致命","ref":"P141-25"},{"q":"資料を引用する際は[テンキョ]を明確にする。","a":"典拠","ref":"P148-7"},{"q":"[サイバン]で無罪を勝ち取ることができた。","a":"裁判","ref":"P153-17"},{"q":"読む人に[キョウレツ]な印象を刻みこんだ言葉。","a":"強烈","ref":"P156-11"},{"q":"後天的に[クンレン]して実践的能力を獲得する。","a":"訓練","ref":"P140-12"},{"q":"一時的に失われた[ヘイコウ]感覚が元に戻る。","a":"平衡","ref":"P137-15"},{"q":"相棒の行動に[ギネン]を抱くようになった。","a":"疑念","ref":"P137-21"},{"q":"途方に暮れてひとり[コクウ]を見つめている。","a":"虚空","ref":"P144-8"},{"q":"激しい肉体労働にも堪える[ガンジョウ]な身体。","a":"頑丈","ref":"P159-18"},{"q":"お金が関わる[カ]けごとはしてはいけない。","a":"賭","ref":"P156-4"},{"q":"[カイキ]日食を見るために南の島へ行く。","a":"皆既","ref":"P147-21"},{"q":"[コウイン]は矢のように流れて誰も気づかない。","a":"光陰","ref":"P138-1"},{"q":"後年の彼には大建築家の[オモカゲ]は見られない。","a":"面影","ref":"P152-1"},{"q":"都市に電力を[キョウキュウ]する発電所を作る。","a":"供給","ref":"P144-9"},{"q":"[ケンアン]だった後継者選びに決着がついた。","a":"懸案","ref":"P141-18"},{"q":"購入したばかりのテレビを壁際に[ハイチ]する。","a":"配置","ref":"P136-5"},{"q":"業務に必須の基本的な[シカク]を取得する。","a":"資格","ref":"P152-8"},{"q":"彼は芸術家としての自己[ケンジ]欲が強い。","a":"顕示","ref":"P145-25"},{"q":"二人は[シュウセイ]変わらぬ愛を誓い合った。","a":"終生（終世）","ref":"P149-25"},{"q":"休日には都会を離れて自然を[マンキツ]する。","a":"満喫","ref":"P146-10"},{"q":"孫娘が祖母の[グチ]の聞き役になっている。","a":"愚痴","ref":"P159-22"},{"q":"電子[ケンビ]鏡でミクロの世界を明らかにする。","a":"顕微","ref":"P143-15"},{"q":"決して失敗しないよう[バンゼン]の注意を払う。","a":"万全","ref":"P154-5"},{"q":"パスカルや芥{あくた}川{がわ}龍{りゅう}之{の}介{すけ}の[ケイク]を味わう。","a":"警句","ref":"P156-12"},{"q":"体の不調は自分自身への[ケイコク]と考える。","a":"警告","ref":"P150-4"},{"q":"昨今の知識や教養を軽視する風潮を[ナゲ]く。","a":"嘆","ref":"P136-3"},{"q":"多くの国が協力して安定した国際関係を[キズ]く。","a":"築","ref":"P155-17"},{"q":"投資による損失は本業の利益で[ソウサイ]された。","a":"相殺","ref":"P143-19"},{"q":"会の運営は[ソウバン]行き詰まる運命だ。","a":"早晩","ref":"P158-11"},{"q":"恋に[オボ]れて仕事が手につかなくなった。","a":"溺","ref":"P155-20"},{"q":"名優の訃報に接し[アイセキ]の念に堪えない。","a":"哀惜","ref":"P140-9"},{"q":"水運と鉄道の[ケッセツ]点として栄えた商業都市。","a":"結節","ref":"P139-21"},{"q":"最もコストのかからない案が[サイヨウ]された。","a":"採用","ref":"P143-16"},{"q":"手が足りないが人を[ヤト]う金銭的ゆとりがない。","a":"雇","ref":"P136-7"},{"q":"華麗な[ブトウ]会の場面を描いた曲を演奏する。","a":"舞踏","ref":"P147-19"},{"q":"工場で安定的に[キンシツ]な商品を作り出す。","a":"均質","ref":"P142-5"},{"q":"待遇改善を求める話し合いがやっと[ダケツ]した。","a":"妥結","ref":"P154-8"},{"q":"伝聞や[オクソク]ばかりで確かな情報がない。","a":"憶測（臆測）","ref":"P142-9"},{"q":"好景気で株式市場は[カッキョウ]を呈している。","a":"活況","ref":"P159-17"},{"q":"[オンコウ]な性格で人と争うことが全くない。","a":"温厚","ref":"P146-11"},{"q":"家の外壁を[トソウ]する仕事が残っている。","a":"塗装","ref":"P147-17"},{"q":"歌姫の声は聴衆にとって[タクセン]のように響く。","a":"託宣","ref":"P151-24"},{"q":"古代中国では亀の甲羅で[キッキョウ]を占った。","a":"吉凶","ref":"P148-4"},{"q":"詩と哲学は深いところで[ツウテイ]している。","a":"通底","ref":"P157-23"},{"q":"誤りは[イサギヨ]く認めて今後の糧にする。","a":"潔","ref":"P141-24"},{"q":"実用性と美は必ずしも[ハイハン]しない。","a":"背反","ref":"P151-19"},{"q":"名誉や[キリツ]といった形式的な価値を重んずる。","a":"規律（紀律）","ref":"P142-3"},{"q":"今更のように心臓の[コドウ]が高くなってくる。","a":"鼓動","ref":"P141-14"},{"q":"地球が[タンジョウ]して以来初めての危機だ。","a":"誕生","ref":"P156-1"},{"q":"[オクビョウ]なので思い切ったことができない。","a":"臆病","ref":"P149-17"},{"q":"存分に[シュワン]を発揮して問題を解決した。","a":"手腕","ref":"P141-15"},{"q":"[ゲンショウ]にとらわれて本質を見失う。","a":"現象","ref":"P139-18"},{"q":"明治の先人たちが近代国家の[イシズエ]を築いた。","a":"礎","ref":"P158-9"},{"q":"全員の協力を得られるかどうかが[セイヒ]の鍵だ。","a":"成否","ref":"P146-9"},{"q":"仕事のやり方を後輩に[コウシャク]する。","a":"講釈","ref":"P158-6"},{"q":"新製品の発売に合わせて大々的に[センデン]する。","a":"宣伝","ref":"P138-9"},{"q":"世にも[キカイ]な現象が立て続けに起こる。","a":"奇怪","ref":"P155-18"},{"q":"難解な語を[ドウギ]の言葉で言い換える。","a":"同義","ref":"P142-4"},{"q":"故郷の[ナツ]かしい景色を久しぶりに見た。","a":"懐","ref":"P142-10"},{"q":"[スイトウ]帳をつけて会社の現金を管理する。","a":"出納","ref":"P156-2"},{"q":"極寒の冬も[コクショ]の夏も研究に没頭している。","a":"酷暑","ref":"P144-12"},{"q":"時間がないので[ガイカツ]的な説明に止{とど}めた。","a":"概括","ref":"P144-7"},{"q":"限りある[シゲン]は早晩枯渇するだろう。","a":"資源","ref":"P147-15"},{"q":"地図を[カクダイ]して見やすく表示する。","a":"拡大","ref":"P154-6"},{"q":"[インシツ]ないじめを根絶しなければいけない。","a":"陰湿","ref":"P144-5"},{"q":"自分の意見をあくまでも[キョウコウ]に主張する。","a":"強硬","ref":"P152-6"},{"q":"周囲に迎合することなく[ココウ]を貫く。","a":"孤高","ref":"P144-11"},{"q":"[カッコ]たる信念をもって果敢に行動する。","a":"確固（確乎）","ref":"P139-19"},{"q":"救命ボートで無人島に[ヒョウチャク]する。","a":"漂着","ref":"P156-7"},{"q":"農作物を守るために害虫を[クジョ]する。","a":"駆除","ref":"P148-8"},{"q":"[ソウレイ]な大聖堂が秋空にそびえ立っている。","a":"壮麗","ref":"P138-10"},{"q":"何の[インガ]でこんなひどい目にあうのか。","a":"因果","ref":"P158-1"},{"q":"彼の行動が社会全体に[ハモン]を呼んだ。","a":"波紋","ref":"P144-3"},{"q":"民衆は新しい国王に[ガンキョウ]に抵抗した。","a":"頑強","ref":"P139-13"},{"q":"世界には[レイコン]の存在を信じる民族もいる。","a":"霊魂","ref":"P137-17"},{"q":"援助により経済的な[キュウチ]を脱した。","a":"窮地","ref":"P146-4"},{"q":"塩の量を[カゲン]して健康によい料理を作る。","a":"加減","ref":"P151-13"},{"q":"会社の[ソシキ]を活性化することが大切だ。","a":"組織","ref":"P140-1"},{"q":"英雄や[イジン]の生涯は冒険に満ちている。","a":"偉人","ref":"P144-4"},{"q":"行政を担う[カンリ]の服務規程を制定する。","a":"官吏","ref":"P137-19"},{"q":"[タンジュン]な過ちが大きな事故につながる。","a":"単純","ref":"P143-20"},{"q":"河川が町と町の[キョウカイ]になっている。","a":"境界","ref":"P159-19"},{"q":"両者の間の[カクシツ]は根深いものがある。","a":"確執","ref":"P137-18"},{"q":"[ヤバン]で暴力的な振る舞いを社会から取り除く。","a":"野蛮","ref":"P159-15"},{"q":"作家の死後、未発表の[ゲンコウ]が発見された。","a":"原稿","ref":"P159-21"},{"q":"交通事故にあって何針も[ヌ]う大怪{け}我{が}をした。","a":"縫","ref":"P150-8"},{"q":"若者は新しい環境に[ジュンノウ]するのが早い。","a":"順応","ref":"P154-4"},{"q":"戦後[フッコウ]で女性の社会進出がすすんだ。","a":"復興","ref":"P152-4"},{"q":"最[センタン]の技術を用いて製品を作る。","a":"先端（尖端）","ref":"P157-19"},{"q":"蜘{く}蛛{も}の糸は強い[ネンチャク]力で虫を捕まえる。","a":"粘着","ref":"P151-18"},{"q":"絹のような[コウタク]をもつ布が発売された。","a":"光沢","ref":"P143-13"},{"q":"国民国家成立は産業社会の発展と[キ]を一にする。","a":"軌","ref":"P137-25"},{"q":"[フソク]の事態に対処するための備えは万全だ。","a":"不測","ref":"P145-16"},{"q":"巧みな[カンゲン]にのせられて不利な契約を結ぶ。","a":"甘言","ref":"P146-12"},{"q":"[タサイ]な分野の人々からの協力により完成した。","a":"多彩","ref":"P141-16"},{"q":"台風の被害に対して適切な[ショチ]を講ずる。","a":"処置","ref":"P148-11"},{"q":"来月から父は転地[リョウヨウ]することになった。","a":"療養","ref":"P145-20"},{"q":"世情に疎く、わがままな王子に[ヘイコウ]する。","a":"閉口","ref":"P145-17"},{"q":"辛{つら}い決断を[セマ]られても感情に流されない。","a":"迫","ref":"P141-17"},{"q":"厳しい運命に[ユウカン]に立ち向かっている。","a":"勇敢","ref":"P145-18"}]},{"id":"imi1","name":"意味 重要語①","test":"第3回","kind":"choice","range":"P210〜P219","note":"範囲の語句の半分をランダムで練習できます。","items":[{"word":"享受","opts":["蓄え豊かになること。","受け継ぎ守ること。","共同で持つこと。","受け取って味わい楽しむこと。"],"a":4,"ref":"P210-3"},{"word":"薫陶","opts":["心を奪われうっとりすること。","その人に仕え教えを受けること。","忘れられないほど深く心に感じること。","人徳によって影響を与え、よい方に導くこと。"],"a":4,"ref":"P216-3"},{"word":"意匠","opts":["物を作る上での理由。","物を作る上での工夫。","模倣したもの。","手本となるもの。"],"a":2,"ref":"P212-2"},{"word":"蓋然性","opts":["物事が起こる可能性の度合いや確率。","必ずそうなるようす。","たまたまそうなるようす。","ある物事を認識している度合。"],"a":1,"ref":"P211-16"},{"word":"偏狭","opts":["一方ばかりを重んずること。","少数派・少数意見。","自分だけの狭い考えにとらわれるさま。","へんぴな場所・地域。"],"a":3,"ref":"P212-7"},{"word":"収斂","opts":["奪い取ること。","意見をまとめること。","収束すること・一点に集まること。","趣味でものを集めること。"],"a":3,"ref":"P213-12"},{"word":"曲解","opts":["物事を楽観的にとらえること。","わざとねじ曲げて解釈すること。","誤って解釈すること・勘違い。","言い訳をすること。"],"a":2,"ref":"P211-17"},{"word":"閉鎖","opts":["閉じること・閉ざすこと。","連絡・通信を断つこと。","黙ること・口を閉ざすこと。","自由を拘束されること。"],"a":1,"ref":"P211-9"},{"word":"違和感","opts":["入り交じった感情。","性質が違うこと。","しっくりこない感じ。","二つのものを融合すること。"],"a":3,"ref":"P212-6"},{"word":"両義","opts":["二つのものを比べること。","均一化すること。","二者択一の課題。","相反する二つの意味。"],"a":4,"ref":"P216-1"},{"word":"逸脱","opts":["より高い次元にあること。","さっぱりと洗練されていること。","本筋からそれ外れること。","悟りを開くこと。"],"a":3,"ref":"P214-3"},{"word":"契機","opts":["とりきめを破ること。","集団の中の決まり・おきて。","形だけの約束をすること。","きっかけ。"],"a":4,"ref":"P215-9"},{"word":"陶冶","opts":["不適なものを取り除くこと。","性質や才能を鍛えて育てること。","学問や精神をみがき鍛えること。","より高尚な状態に高められること。"],"a":2,"ref":"P216-2"},{"word":"認知","opts":["ある事を認め知ること。","知識が広まること。","正当性を公の機関が証明すること。","公の機関が許可すること。"],"a":1,"ref":"P212-4"},{"word":"還元","opts":["すべてを一つにすること。","もとに戻すこと。","跳ね返ってくること。","もとをはっきりさせること。"],"a":2,"ref":"P213-15"},{"word":"巧拙","opts":["手際よく巧みにできているさま。","じょうずなこととへたなこと。","素朴で荒削りなつくりであること。","わざと稚拙に見せる技巧。"],"a":2,"ref":"P210-6"},{"word":"彷徨","opts":["望みがなくなること。","ぼんやりしているさま。","あてもなくうろつくこと。","たけり叫ぶこと。"],"a":3,"ref":"P215-13"},{"word":"傾倒","opts":["社会的規範に反すること。","考え方などが偏ること。","影響を受けること。","心を寄せること・熱中すること。"],"a":4,"ref":"P216-8"},{"word":"漸次","opts":["やっと・ようやく。","しばらく・少しの間。","かろうじて・わずかに。","次第に・だんだん。"],"a":4,"ref":"P218-8"},{"word":"逡巡","opts":["決断をためらってぐずぐずすること。","道に迷ってはぐれること。","混乱してうろたえること。","威圧されおそれおののくこと。"],"a":1,"ref":"P210-2"},{"word":"境界","opts":["現実世界・この世。","土地や物事の境目。","神聖な場所。","これ以上はないぎりぎりのところ。"],"a":2,"ref":"P212-1"},{"word":"洞察","opts":["基本を学ぶこと。","客観的に見ること。","実地の状況を見きわめること。","よく見通すこと。"],"a":4,"ref":"P213-13"},{"word":"弊害","opts":["つじつまが合わないこと。","苦しめ虐げること。","互いにいがみあうこと。","害となる悪いこと。"],"a":4,"ref":"P218-6"},{"word":"鎮座","opts":["物事の土台・基礎。","神聖な場所。","どっかりと座っていること。","意見を通すために粘ること。"],"a":3,"ref":"P213-11"},{"word":"当為","opts":["才能があること。","当然そうするべきこと。","結果としてよい流れになること。","思った通りにすること。"],"a":2,"ref":"P218-3"},{"word":"看破","opts":["わざと見逃がすこと。","大声で説き伏せること。","隠れている物事を見破ること。","事実に疑いをもつこと。"],"a":3,"ref":"P218-4"},{"word":"比喩","opts":["比べるものがない特別なもの。","判断するときの基準。","二つのものを比べること。","類似したものを借りて表現すること。"],"a":4,"ref":"P214-5"},{"word":"凋落","opts":["落ちぶれること。","攻め落とされること。","風紀が乱れること。","勢いが衰えること。"],"a":1,"ref":"P219-10"},{"word":"妥協","opts":["合意に達すること。","それとなく反応をうかがうこと。","折り合いをつけてまとめること。","力を合わせて取り組むこと。"],"a":3,"ref":"P210-4"},{"word":"拘泥","opts":["制限すること。","気にかけないこと。","つまずくこと。","こだわること。"],"a":4,"ref":"P217-9"},{"word":"昇華","opts":["派手に装うこと。","地位が昇り進むこと。","成長すること。","より高度な状態に高められること。"],"a":4,"ref":"P215-10"},{"word":"表象","opts":["表面にあらわれたもの・現象。","抽象的なものを具体的なもので表すこと。","強く感じて心に残ったもの。","功績や善行を褒め称{たた}えること。"],"a":2,"ref":"P211-12"},{"word":"思索","opts":["筋道を立てて深く考えること。","自分に合った考え方を選ぶこと。","順序よく整理すること。","捜し求めること。"],"a":1,"ref":"P213-10"},{"word":"厭世","opts":["世の中に出て行くこと。","俗世を離れること。","この世を嫌なものと思うこと。","世を治めること・治まった世。"],"a":3,"ref":"P217-16"},{"word":"命題","opts":["論理的な判断を言葉で表したもの。","芸術作品の中心思想。","命がけでやる仕事。","与えられた重要な課題。"],"a":1,"ref":"P215-16"},{"word":"暗示","opts":["その分野の知識がないこと。","それとなく知らせること。","黙って意志を示すこと。","意志が伝わらないこと。"],"a":2,"ref":"P214-7"},{"word":"無垢","opts":["なにもないこと・なにもない状態。","無味乾燥でおもしろみがないこと。","印象に残らないこと。","けがれのないさま。"],"a":4,"ref":"P214-6"},{"word":"圧倒的","opts":["相手を力で支配するさま。","強引に物事を推し進めるさま。","物事の根本から改めるさま。","他とかけ離れてすぐれているさま。"],"a":4,"ref":"P211-11"},{"word":"容赦","opts":["一定の範囲・区域。","すべてを受け入れること。","たやすいこと・易しいこと。","手加減すること・許すこと。"],"a":4,"ref":"P212-3"},{"word":"無意識","opts":["睡眠中に、あたかも現実の経験であるかのように感じる観念や心象。","頭の中を空にしてなにも考えない状態。","意識せず影響を与える心の深層。","言葉にしないで伝える意志表示。"],"a":3,"ref":"P210-8"}]},{"id":"imi2","name":"意味 重要語②","test":"第3回","kind":"choice","range":"P210〜P219","note":"範囲の語句の半分をランダムで練習できます。","items":[{"word":"漸次","opts":["かろうじて・わずかに。","しばらく・少しの間。","やっと・ようやく。","次第に・だんだん。"],"a":4,"ref":"P218-8"},{"word":"便宜","opts":["ためになること。","都合のよいこと。","気持ちよいこと。","ほどよい頃合い。"],"a":2,"ref":"P218-5"},{"word":"相克","opts":["互いに勝とうとして争うこと。","互いに憎み合うこと。","差し引いて損得なしにすること。","力を合わせて困難を乗り越えること。"],"a":1,"ref":"P215-11"},{"word":"厭世","opts":["世を治めること・治まった世。","世の中に出て行くこと。","この世を嫌なものと思うこと。","俗世を離れること。"],"a":3,"ref":"P217-16"},{"word":"露呈","opts":["隠れているものが現れ出ること。","勢いよく現れ出ること。","覆うものがなくむきだしであること。","収まりきれず外に現れること。"],"a":1,"ref":"P216-4"},{"word":"彷徨","opts":["あてもなくうろつくこと。","たけり叫ぶこと。","望みがなくなること。","ぼんやりしているさま。"],"a":1,"ref":"P215-13"},{"word":"無垢","opts":["印象に残らないこと。","無味乾燥でおもしろみがないこと。","なにもないこと・なにもない状態。","けがれのないさま。"],"a":4,"ref":"P214-6"},{"word":"表象","opts":["抽象的なものを具体的なもので表すこと。","表面にあらわれたもの・現象。","功績や善行を褒め称{たた}えること。","強く感じて心に残ったもの。"],"a":1,"ref":"P211-12"},{"word":"巧拙","opts":["わざと稚拙に見せる技巧。","素朴で荒削りなつくりであること。","じょうずなこととへたなこと。","手際よく巧みにできているさま。"],"a":3,"ref":"P210-6"},{"word":"傾倒","opts":["考え方などが偏ること。","社会的規範に反すること。","心を寄せること・熱中すること。","影響を受けること。"],"a":3,"ref":"P216-8"},{"word":"功罪","opts":["長所と短所。","手柄と過ち・よい点と悪い点。","表面と内奥。","成功と失敗。"],"a":2,"ref":"P214-2"},{"word":"傍観","opts":["その場に行って見ること。","物事の状態や変化を客観的に注意深く見ること。","警戒して見張ること。","直接関わらずそばで見ること。"],"a":4,"ref":"P212-5"},{"word":"趨勢","opts":["事のいきさつ。","実力の違い。","きっかけ・原因。","動向・なりゆき。"],"a":4,"ref":"P217-10"},{"word":"凋落","opts":["風紀が乱れること。","攻め落とされること。","落ちぶれること。","勢いが衰えること。"],"a":3,"ref":"P219-10"},{"word":"陶冶","opts":["性質や才能を鍛えて育てること。","より高尚な状態に高められること。","不適なものを取り除くこと。","学問や精神をみがき鍛えること。"],"a":1,"ref":"P216-2"},{"word":"曲解","opts":["わざとねじ曲げて解釈すること。","誤って解釈すること・勘違い。","言い訳をすること。","物事を楽観的にとらえること。"],"a":1,"ref":"P211-17"},{"word":"意匠","opts":["手本となるもの。","模倣したもの。","物を作る上での理由。","物を作る上での工夫。"],"a":4,"ref":"P212-2"},{"word":"含意","opts":["表面には現れない意味内容。","遠回しに表した真意。","他人と同じ意見。","自分勝手な考え。"],"a":1,"ref":"P213-9"},{"word":"卑近","opts":["低俗で品がないさま。","細かな点まで詳しいさま。","手近でありふれているさま。","簡潔でわかりやすいさま。"],"a":3,"ref":"P214-4"},{"word":"逡巡","opts":["混乱してうろたえること。","道に迷ってはぐれること。","決断をためらってぐずぐずすること。","威圧されおそれおののくこと。"],"a":3,"ref":"P210-2"},{"word":"両義","opts":["二者択一の課題。","二つのものを比べること。","均一化すること。","相反する二つの意味。"],"a":4,"ref":"P216-1"},{"word":"瓦解","opts":["すっかり消え去ること。","言い争って不和になること。","物事がうまくかみあわないこと。","一部の崩れから全体が崩れること。"],"a":4,"ref":"P219-11"},{"word":"通暁","opts":["風流を好むこと。","すみずみまで知っていること。","研究に没頭していること。","互いに通じ合っていること。"],"a":2,"ref":"P216-6"},{"word":"媒介","opts":["面倒や手数のかかること。","間に立ってとりもつこと。","知らない人を引き合わせること。","間になにもないこと。"],"a":2,"ref":"P215-15"},{"word":"享受","opts":["蓄え豊かになること。","共同で持つこと。","受け取って味わい楽しむこと。","受け継ぎ守ること。"],"a":3,"ref":"P210-3"},{"word":"扇動","opts":["強い力を与えて揺り動かすこと。","気持ちをあおってある行動をするよう仕向けること。","進む方向を示してある場所や状態にみちびくこと。","人を励ましふるいたたせること。"],"a":2,"ref":"P219-9"},{"word":"暗示","opts":["黙って意志を示すこと。","意志が伝わらないこと。","それとなく知らせること。","その分野の知識がないこと。"],"a":3,"ref":"P214-7"},{"word":"当為","opts":["思った通りにすること。","結果としてよい流れになること。","才能があること。","当然そうするべきこと。"],"a":4,"ref":"P218-3"},{"word":"自戒","opts":["自分で自分を戒めること。","慎み深くおとなしくすること。","それ自体の働きだけで形を整えること。","自然に制度ができること。"],"a":1,"ref":"P214-8"},{"word":"違和感","opts":["性質が違うこと。","二つのものを融合すること。","入り交じった感情。","しっくりこない感じ。"],"a":4,"ref":"P212-6"},{"word":"閉鎖","opts":["閉じること・閉ざすこと。","連絡・通信を断つこと。","黙ること・口を閉ざすこと。","自由を拘束されること。"],"a":1,"ref":"P211-9"},{"word":"命題","opts":["与えられた重要な課題。","芸術作品の中心思想。","論理的な判断を言葉で表したもの。","命がけでやる仕事。"],"a":3,"ref":"P215-16"},{"word":"収斂","opts":["奪い取ること。","収束すること・一点に集まること。","意見をまとめること。","趣味でものを集めること。"],"a":2,"ref":"P213-12"},{"word":"拘泥","opts":["気にかけないこと。","制限すること。","こだわること。","つまずくこと。"],"a":3,"ref":"P217-9"},{"word":"昇華","opts":["より高度な状態に高められること。","地位が昇り進むこと。","派手に装うこと。","成長すること。"],"a":1,"ref":"P215-10"},{"word":"認知","opts":["ある事を認め知ること。","公の機関が許可すること。","知識が広まること。","正当性を公の機関が証明すること。"],"a":1,"ref":"P212-4"},{"word":"矮小化","opts":["単純には理解できないこと。","縮めて小さくすること。","小さく見せるようにすること。","実際より大げさに言うこと。"],"a":3,"ref":"P217-11"},{"word":"洞察","opts":["基本を学ぶこと。","よく見通すこと。","客観的に見ること。","実地の状況を見きわめること。"],"a":2,"ref":"P213-13"},{"word":"容赦","opts":["たやすいこと・易しいこと。","すべてを受け入れること。","手加減すること・許すこと。","一定の範囲・区域。"],"a":3,"ref":"P212-3"},{"word":"分節","opts":["区切りに分けて意味を与えること。","種類ごとに分けること。","一つ一つこなしていくこと。","時間配分を決めること。"],"a":1,"ref":"P217-17"}]},{"id":"kata","name":"カタカナ語","test":"第3回","kind":"choice","range":"P220〜P231","note":"範囲の語句の半分をランダムで練習できます。","items":[{"word":"コミュニティー","opts":["物事の範囲","共同声明・公式声明","地域社会・共同体","関係性"],"a":3,"ref":"P228-6"},{"word":"ブルジョア","opts":["無産階級・労働者階級","資本家・金持ち","新教徒・新教","中庸・一般"],"a":2,"ref":"P222-5"},{"word":"グローバル","opts":["再生・復活","一定の範囲内で","物事の統一","全地球的規模の"],"a":4,"ref":"P220-8"},{"word":"アンビバレント","opts":["信じがたいさま","楽しげなさま","両面価値・相反する二つの感情","他者に向けられた強い感情・執着"],"a":3,"ref":"P220-3"},{"word":"ペダンティック","opts":["異端の・正統でない","学問的・学術的","衒{げん}学{がく}的（学識をひけらかすさま）","詩的な・詩的情緒豊かな"],"a":3,"ref":"P229-17"},{"word":"エクスタシー","opts":["性愛・好色的傾向","精神の浄化","恍惚（心を奪われてうっとりすること）","同語反復"],"a":3,"ref":"P231-11"},{"word":"マンネリズム","opts":["同じことを繰り返すこと","実用主義","決まり事","型通りで独創性に欠けること"],"a":4,"ref":"P221-12"},{"word":"ストイック","opts":["皮肉屋・冷笑家","禁欲的・禁欲主義者","高潔・清貧","物事を突きつめること"],"a":2,"ref":"P229-12"},{"word":"アポリア","opts":["過程・工程","弁証法における反定立","情報の伝達","解決できない難問・行き詰まり"],"a":4,"ref":"P230-8"},{"word":"メンタリティー","opts":["精神構造・心的傾向","自己実現","現代性","人格・性格・個性"],"a":1,"ref":"P223-12"},{"word":"スローガン","opts":["目標を簡潔に表した標語","格言・警句","ゆっくりとした動作","静的な"],"a":1,"ref":"P226-3"},{"word":"リテラシー","opts":["その時代を生きるために最低限必要とされる能力","基礎・土台","寓{ぐう}喩{ゆ}・たとえ話","環境"],"a":1,"ref":"P225-10"},{"word":"オプティミズム","opts":["悲観主義・悲観論","楽天主義・楽観論","権威・大家","原始の・素朴な・根源の"],"a":2,"ref":"P227-14"},{"word":"シニカル","opts":["非情で厳しいさま","技術上の・専門的な","年長者・上級者","皮肉な・冷笑的な"],"a":4,"ref":"P226-4"},{"word":"ジャンル","opts":["種類・様式","混{こん}沌{とん}・無秩序","順序・序列","物事を整理すること"],"a":1,"ref":"P230-1"},{"word":"コミュニケーション","opts":["考え方を統一すること","関係性","情報伝達・意思の疎通","規則・管理・統制"],"a":3,"ref":"P221-14"},{"word":"タブー","opts":["禁忌・呪術的宗教的な禁制","替え玉・人形・人体模型","見えないもの","封殺・封印"],"a":1,"ref":"P223-17"},{"word":"メタファー","opts":["方法・手順・体系","直喩・明喩","隠喩","移動・移転"],"a":3,"ref":"P221-15"},{"word":"プロレタリアート","opts":["職業的・本職の","労働者階級・無産階級","新教徒・新教","専門職・専門家"],"a":2,"ref":"P224-1"},{"word":"エゴ","opts":["自己・自我","環境保護・生態学","自己同一性","機知"],"a":1,"ref":"P225-12"},{"word":"イデア","opts":["理念（根本的な考え方）・観念（思い浮かべたことや考えたこと）","言葉・理性","知性・判断能力","姿・表象"],"a":1,"ref":"P225-14"},{"word":"オルタナティブ","opts":["破壊的・破滅主義","代案・あることの代わりにとる方法","積極的・肯定的","悲観主義・悲観論"],"a":2,"ref":"P224-2"},{"word":"グロテスク","opts":["時代錯誤","異様なさま・不気味なさま・怪奇なさま","復古主義","醜悪なさま・悪趣味なさま"],"a":2,"ref":"P222-3"},{"word":"プライバシー","opts":["身分階層性・位階性","私生活・個人の生活を守る権利","自尊心・自負心","自己同一性・主体性"],"a":2,"ref":"P228-4"},{"word":"コンセプト","opts":["関係・つながり","対照・対比","概念（ものの考え方・おおよその内容）・観念","概要・要点"],"a":3,"ref":"P229-11"},{"word":"デジタル","opts":["既視感","状態を段階的に区切って表すこと","切れ目なく表すこと","生気あふれているさま"],"a":2,"ref":"P228-3"},{"word":"シナジー","opts":["同調圧力","意思伝達","理想・目標","相乗作用"],"a":4,"ref":"P227-10"},{"word":"ユートピア","opts":["未来の・将来の","理想郷・桃源郷","空想的な","植民地の・植民地風の"],"a":2,"ref":"P227-15"},{"word":"カタルシス","opts":["精神の浄化","結末・結論","自己満足","禁欲主義・克己主義"],"a":1,"ref":"P229-10"},{"word":"リスク","opts":["損失・損害","難点・短所","危険・冒険","問題・課題"],"a":3,"ref":"P225-9"},{"word":"コンテクスト","opts":["本文・原文","保守的なさま","組み立て・構造","文脈・脈絡"],"a":4,"ref":"P223-15"},{"word":"パロディー","opts":["冗談じみたこと","もじり・風刺化した作品","題材・動機","隠喩的な表現手法"],"a":2,"ref":"P224-3"},{"word":"ノスタルジー","opts":["境界が不明確であること","資産家階級・有産階級","郷愁・過去の事物に対する思慕","空想・幻想"],"a":3,"ref":"P228-1"},{"word":"ナルシシズム","opts":["国家主義・民族主義","自己満足","自己愛・自己陶酔・うぬぼれ","手段を選ばぬ権謀術数"],"a":3,"ref":"P224-6"},{"word":"ロジカル","opts":["論理的な","教養人を気取っているような","物事の基本・枠組み","経緯・経過"],"a":1,"ref":"P221-11"},{"word":"アイロニー","opts":["皮肉・風刺","象徴・表象","理念・観念","叙事・叙景"],"a":1,"ref":"P220-4"},{"word":"ドグマ","opts":["精神的外傷","宗教上の教義・独断（思い込みでの判断）","巨大・巨視的","格言・金言"],"a":2,"ref":"P226-2"},{"word":"マイノリティー","opts":["規模の縮小","少数派・少数民族","独特なさま","もてなし・厚遇"],"a":2,"ref":"P224-4"},{"word":"デカダンス","opts":["機器・装置","案内・手引き","切り離し・離すこと","退廃的な傾向・自堕落"],"a":4,"ref":"P227-17"},{"word":"アプリオリ","opts":["物事のはじまり","法令遵守・要求や命令への服従","先験的・先天的","勘違い・思い違い"],"a":3,"ref":"P231-14"},{"word":"ユニーク","opts":["独特なさま・独自なさま","滑稽なさま・珍奇なさま","楽天的・楽天家","全体を構成する一つ一つの要素"],"a":1,"ref":"P222-6"},{"word":"コスモス","opts":["混{こん}沌{とん}・区別があいまい","秩序・整然とした宇宙","立場・態度","華やかなさま"],"a":2,"ref":"P225-13"},{"word":"モラトリアム","opts":["退屈・倦{けん}怠{たい}","怠惰なやり方・生活","現代主義","社会的成長に至るまでの準備期間"],"a":4,"ref":"P229-15"},{"word":"ジャーナリズム","opts":["物事を分野ごとに分けること","出来事を報道し意見を述べる機関","国家主義","派閥的な排他主義"],"a":2,"ref":"P229-14"},{"word":"ジレンマ","opts":["板挟み（どちらとも決めかねること）","哀感・哀愁","矛盾","両義的"],"a":1,"ref":"P225-15"},{"word":"シンメトリー","opts":["相対的","自家撞{どう}着{ちゃく}・二律背反","二者択一","左右対称・つりあい・均整"],"a":4,"ref":"P231-9"},{"word":"アンニュイ","opts":["周辺・環境","微妙な・曖昧な","機知に富んだ","退屈・倦{けん}怠{たい}"],"a":4,"ref":"P229-16"},{"word":"フェティシズム","opts":["物神崇拝（物を神聖視すること）","女権拡張論・女性解放思想","時代錯誤","精神崇拝・自然崇拝"],"a":1,"ref":"P227-13"},{"word":"エコロジー","opts":["環境保護・生態学","類似・類推","経済","自己・自我"],"a":1,"ref":"P226-1"},{"word":"プリミティブ","opts":["原始の・素朴な・根源の","悲観的な","進歩的なさま","可{か}憐{れん}な・かわいいさま"],"a":1,"ref":"P227-12"}]}]</script>
+<script>
+(()=>{
+const SETS = JSON.parse(document.getElementById('qdata').textContent);
+const SET = Object.fromEntries(SETS.map(s=>[s.id,s]));
+const $ = s=>document.querySelector(s);
+const app = $('#app');
+const KEY='goiDrill.v1';
+
+/* ---------- 保存 ---------- */
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{} }catch(e){ return {} } }
+let DB = load();
+DB.st ??= {}; DB.pref ??= {tate:false,pad:true}; DB.days ??= {}; DB.last ??= {};
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(DB)) }catch(e){} }
+const dayKey = ()=>{ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate() };
+
+/* ---------- 成績 ---------- */
+const sid=(set,i)=>set+':'+i;
+const stat=id=>DB.st[id];
+function record(id,ok){
+  const s = DB.st[id] ??= {n:0,c:0,h:''};
+  s.n++; if(ok) s.c++;
+  s.h=(s.h+(ok?'1':'0')).slice(-8);
+  s.t=Date.now();
+  const k=dayKey(); DB.days[k]=(DB.days[k]||0)+1;
+  save(); renderToday();
+}
+// 状態: unseen / ok(定着) / mid(あやしい) / ng(苦手)
+function level(id){
+  const s=stat(id); if(!s) return 'unseen';
+  const last=s.h.slice(-1), r3=s.h.slice(-3), acc=s.c/s.n;
+  if(last==='0') return 'ng';
+  if(r3.length>=2 && !r3.includes('0') && acc>=.75) return 'ok';
+  return acc<.5 ? 'ng' : 'mid';
+}
+// 苦手度（大きいほど先に出す）
+function weakness(id){
+  const s=stat(id); if(!s) return .55;
+  const acc=(s.c+1)/(s.n+2);
+  let w=1-acc;
+  if(s.h.slice(-1)==='0') w+=.45;
+  if(s.h.slice(-2)==='00') w+=.2;
+  if(s.h.slice(-3)==='111') w-=.3;
+  const days=(Date.now()-(s.t||0))/864e5; w+=Math.min(days,14)*.01; // 久しぶりの問題も少し優先
+  return w;
+}
+function setSummary(set){
+  const c={unseen:0,ok:0,mid:0,ng:0}; let n=0,cc=0;
+  set.items.forEach((_,i)=>{ const id=sid(set.id,i); c[level(id)]++; const s=stat(id); if(s){n+=s.n;cc+=s.c} });
+  return {...c,total:set.items.length,acc:n?Math.round(cc/n*100):null};
+}
+
+/* ---------- 文字列の描画 ---------- */
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function rich(s){ // {ruby} と [傍線]
+  return esc(s).replace(/(.)\{([^}]+)\}/g,'<ruby>$1<rt>$2</rt></ruby>').replace(/\[([^\]]+)\]/g,'<span class="bl">$1</span>');
+}
+const mainAns=a=>a.replace(/（.*?）/g,'');
+function sentenceBack(set,it){
+  if(set.id==='yomi'){ // 傍線部にふりがな
+    return esc(it.q).replace(/(.)\{([^}]+)\}/g,'<ruby>$1<rt>$2</rt></ruby>').replace(/\[([^\]]+)\]/,(m,k)=>`<span class="bl"><ruby>${k}<rt>${esc(mainAns(it.a))}</rt></ruby></span>`);
+  }
+  return rich(it.q.replace(/\[([^\]]+)\]/,'['+mainAns(it.a)+']'));
+}
+const plain=s=>s.replace(/\{[^}]+\}/g,'');
+const KANA='①②③④';
+
+/* ---------- 画面: ホーム ---------- */
+let view='home';
+function home(){
+  view='home';
+  const tests=[...new Set(SETS.map(s=>s.test))];
+  app.innerHTML=`<p class="lead">対策プリントの全${SETS.reduce((a,s)=>a+s.items.length,0)}問を収録。カードをめくって自己採点、意味は4択。記録はこの端末に保存され、苦手な問題から出題できます。</p>`+
+  tests.map(t=>`<section class="test"><h2>${t}統一テスト</h2><div class="sets">${
+    SETS.filter(s=>s.test===t).map(s=>{
+      const m=setSummary(s), w=k=>(m[k]/m.total*100).toFixed(2)+'%';
+      return `<button class="set" type="button" data-set="${s.id}">
+        <div class="nm">${s.name}<span>${s.items.length}問・${s.range}</span></div>
+        <div class="pct num">${m.acc==null?'—':m.acc+'%'}<small>正答率</small></div>
+        <div class="meter"><i class="m-ok" style="width:${w('ok')}"></i><i class="m-mid" style="width:${w('mid')}"></i><i class="m-ng" style="width:${w('ng')}"></i></div>
+        <div class="legend num"><span><i class="m-ok"></i>定着 ${m.ok}</span><span><i class="m-mid"></i>あやしい ${m.mid}</span><span><i class="m-ng"></i>苦手 ${m.ng}</span><span><i style="background:var(--unseen)"></i>未学習 ${m.unseen}</span></div>
+      </button>`}).join('')}</div></section>`).join('');
+  app.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>setPage(b.dataset.set));
+  scrollTo(0,0);
+}
+
+/* ---------- 画面: セット ---------- */
+let cfg={};
+function setPage(id,keep){
+  view='set'; const set=SET[id];
+  const prev=DB.last[id]||{};
+  if(!keep) cfg={set:id,mode:prev.mode||'order',from:1,to:set.items.length,count:prev.count||20,style:prev.style||(set.kind==='choice'?'choice':'card'),hide:true};
+  const m=setSummary(set);
+  const ngIds=set.items.map((_,i)=>i).filter(i=>level(sid(id,i))==='ng');
+  const modes=[
+    ['order','順番通り','番号順に出題'],
+    ['random','ランダム','範囲からシャッフル'],
+    ['weak','苦手優先','正答率の低い問題・未学習から'],
+    ['wrong','間違えた問題',`直近で×の${ngIds.length}問だけ`],
+  ];
+  app.innerHTML=`<button class="back" type="button" id="bk">← 一覧へ</button>
+  <div class="sethead"><h2>${set.name}</h2><p>${set.test}統一テスト対策・${set.range}・${set.items.length}問 ／ ${set.note}</p></div>
+  <div class="panel"><h3>出題のしかた</h3>
+    <div class="seg">${modes.map(([k,a,b])=>`<button type="button" class="opt" data-mode="${k}" aria-pressed="${cfg.mode===k}" ${k==='wrong'&&!ngIds.length?'disabled':''}><b>${a}</b><span>${b}</span></button>`).join('')}</div>
+    <div class="row">
+      <label>範囲 <input id="from" type="number" min="1" max="${set.items.length}" value="${cfg.from}" class="num"> 〜 <input id="to" type="number" min="1" max="${set.items.length}" value="${cfg.to}" class="num"></label>
+    </div>
+    <div class="row"><span>問題数</span><div class="chips">${[10,20,30,50,0].map(n=>`<button type="button" class="chip num" data-count="${n}" aria-pressed="${cfg.count===n}">${n||'全部'}</button>`).join('')}</div></div>
+    ${set.kind==='choice'?`<div class="row"><span>形式</span><div class="chips"><button type="button" class="chip" data-style="choice" aria-pressed="${cfg.style==='choice'}">4択</button><button type="button" class="chip" data-style="card" aria-pressed="${cfg.style==='card'}">カード（意味を思い出す）</button></div></div>`:''}
+    <button class="start" type="button" id="go">はじめる</button>
+    <p class="hint" id="hint"></p>
+  </div>
+  <div class="panel"><h3>問題ごとの記録 <span class="num" style="float:right">${m.acc==null?'':'正答率 '+m.acc+'%'}</span></h3>
+    <div class="grid">${set.items.map((_,i)=>{const l=level(sid(id,i));return `<button type="button" class="cell num ${l}" data-i="${i}" title="${i+1}">${i+1}</button>`}).join('')}</div>
+    <p class="hint">緑＝定着　黄＝あやしい　赤＝苦手（直近で×）　灰＝未学習。番号をタップすると下の一覧に移動します。</p>
+  </div>
+  <div class="panel"><h3>一覧で確認</h3>
+    <div class="chips"><button type="button" class="chip" id="hideT" aria-pressed="${cfg.hide}">答えをかくす（赤シート）</button></div>
+    <div class="list" id="list"></div>
+  </div>`;
+  $('#bk').onclick=home;
+  app.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{cfg.mode=b.dataset.mode;setPage(id,true)});
+  app.querySelectorAll('[data-count]').forEach(b=>b.onclick=()=>{cfg.count=+b.dataset.count;setPage(id,true)});
+  app.querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{cfg.style=b.dataset.style;setPage(id,true)});
+  const clampIn=()=>{const N=set.items.length;let f=Math.max(1,Math.min(N,+$('#from').value||1)),t=Math.max(1,Math.min(N,+$('#to').value||N));if(f>t)[f,t]=[t,f];cfg.from=f;cfg.to=t;hint()};
+  $('#from').onchange=clampIn; $('#to').onchange=clampIn;
+  $('#hideT').onclick=()=>{cfg.hide=!cfg.hide;$('#hideT').setAttribute('aria-pressed',cfg.hide);renderList(set)};
+  app.querySelectorAll('.cell').forEach(c=>c.onclick=()=>{const el=document.getElementById('li'+c.dataset.i);el.scrollIntoView({block:'center',behavior:'smooth'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1200)});
+  $('#go').onclick=()=>{const q=buildQueue();if(q.length){DB.last[id]={mode:cfg.mode,count:cfg.count,style:cfg.style};save();startDrill(set,q)}};
+  function hint(){const q=buildQueue();$('#hint').textContent=q.length?`${q.length}問を出題します。`:'この条件にあう問題がありません。';$('#go').disabled=!q.length}
+  hint(); renderList(set);
+  if(!keep) scrollTo(0,0);
+}
+function renderList(set){
+  $('#list').innerHTML=set.items.map((it,i)=>{
+    const q = set.kind==='choice' ? `<b>${rich(it.word)}</b>` : rich(it.q);
+    const a = set.kind==='choice' ? rich(it.opts[it.a-1]) : esc(it.a);
+    return `<div class="li" id="li${i}"><span class="n num">${i+1}</span><span class="q">${q}</span><span class="a ${cfg.hide?'hide':''}">${a}<span class="ref">${it.ref}</span></span></div>`}).join('');
+  $('#list').querySelectorAll('.a.hide').forEach(a=>a.onclick=()=>a.classList.remove('hide'));
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildQueue(){
+  const set=SET[cfg.set];
+  let idx=[]; for(let i=cfg.from-1;i<cfg.to;i++) idx.push(i);
+  if(cfg.mode==='random') shuffle(idx);
+  if(cfg.mode==='weak'){ idx=idx.map(i=>[i,weakness(sid(set.id,i))+Math.random()*.08]).sort((a,b)=>b[1]-a[1]).map(x=>x[0]); }
+  if(cfg.mode==='wrong'){ idx=shuffle(idx.filter(i=>level(sid(set.id,i))==='ng')); }
+  if(cfg.count) idx=idx.slice(0,cfg.count);
+  if(cfg.mode==='weak') shuffle(idx);
+  return idx;
+}
+
+/* ---------- 画面: ドリル ---------- */
+let D=null;
+function startDrill(set,queue){
+  view='drill';
+  D={set,queue,pos:0,res:[],flipped:false,answered:false,style:set.kind==='choice'?cfg.style:'card'};
+  card();
+}
+function histDots(id){const h=(stat(id)?.h||'').padStart(5,'-').slice(-5);return `<span class="hist" title="過去5回の結果">${[...h].map(c=>`<i class="${c==='1'?'o':c==='0'?'x':''}"></i>`).join('')}</span>`}
+function card(){
+  const {set,queue,pos}=D; const i=queue[pos], it=set.items[i], id=sid(set.id,i);
+  D.flipped=false; D.answered=false;
+  const isChoice=D.style==='choice', isWritten=set.kind==='written';
+  const tate=DB.pref.tate&&isWritten;
+  let front;
+  if(isWritten) front=`<div class="sent ${tate?'tate':''}"><div>${rich(it.q)}</div></div>`;
+  else front=`<div class="sent"><div class="word">${rich(it.word)}</div></div>`;
+  const prompt=set.id==='yomi'?'傍線部の読みは？':set.kind==='written'?'カタカナを漢字に':isChoice?'意味を選びなさい':'意味を思い出そう';
+  let order=[0,1,2,3]; if(isChoice) shuffle(order); D.order=order;
+  app.innerHTML=`<div class="drill">
+    <div class="dtop num"><button class="quit" type="button" id="quit">✕ やめる</button><div class="prog"><i style="width:${pos/queue.length*100}%"></i></div><span>${pos+1} / ${queue.length}</span></div>
+    <div class="card ${isChoice?'choice':''}" id="card" ${isChoice?'':'tabindex="0" role="button" aria-label="カードをめくる"'}>
+      <div class="cmeta num"><span>${set.name} ${i+1}　${prompt}</span>${histDots(id)}</div>
+      ${front}
+      <div id="under">${isChoice?'':`<div class="tap">タップしてめくる <span class="kbd">（スペース）</span></div>`}</div>
+    </div>
+    <div id="ctrl">${isChoice?`<div class="choices">${order.map((o,k)=>`<button type="button" class="ch" data-o="${o}"><span class="k">${KANA[k]}</span><span>${rich(it.opts[o])}</span></button>`).join('')}</div>`
+      :`<button class="flipbtn" type="button" id="flip">答えを見る</button>`}</div>
+    ${isWritten&&DB.pref.pad?`<div class="pad"><canvas id="cv"></canvas><div class="ph"><span>手書きメモ（指やペンで書いてからめくる）</span><button type="button" id="clr">消す</button></div></div>`:''}
+    <div class="tools"><span class="kbd">キー: スペース＝めくる　← ×　→ ○${isChoice?'　1〜4＝選択':''}</span><span></span>${isWritten?`<button type="button" id="tateT">${DB.pref.tate?'横書きにする':'縦書きにする'}</button>`:''}</div>
+  </div>`;
+  $('#quit').onclick=()=>finish(true);
+  if(isChoice){ app.querySelectorAll('.ch').forEach(b=>b.onclick=()=>choose(+b.dataset.o)); }
+  else { $('#card').onclick=flip; $('#flip').onclick=flip; }
+  if($('#tateT')) $('#tateT').onclick=()=>{DB.pref.tate=!DB.pref.tate;save();card()};
+  if($('#cv')) pad();
+}
+function flip(){
+  if(D.flipped) return; D.flipped=true;
+  const {set,queue,pos}=D; const i=queue[pos], it=set.items[i];
+  const c=$('#card'); c.classList.add('flipin'); c.style.cursor='default';
+  if(set.kind==='written') c.querySelector('.sent>div').innerHTML=sentenceBack(set,it);
+  const big=set.kind==='written'?esc(it.a):rich(it.opts[it.a-1]);
+  $('#under').innerHTML=`<div class="ans"><div class="big" ${set.kind!=='written'?'style="font-size:20px;font-family:var(--f-ui)"':''}>${big}</div><div class="ref num">教科書 ${it.ref.replace('-','・')}</div></div>`;
+  $('#ctrl').innerHTML=`<div class="grade"><button class="x" type="button" id="gx">× まだ<small>もう一度出す</small></button><button class="o" type="button" id="go2">○ できた<small>正解</small></button></div>`;
+  $('#gx').onclick=()=>grade(false); $('#go2').onclick=()=>grade(true);
+}
+function grade(ok){
+  if(D.answered) return; D.answered=true;
+  const {set,queue,pos}=D; const i=queue[pos];
+  record(sid(set.id,i),ok); D.res.push({i,ok});
+  const st=document.createElement('div'); st.className='stamp '+(ok?'o':'x'); st.textContent=ok?'○':'✕'; $('#card').appendChild(st);
+  setTimeout(next, 380);
+}
+function choose(o){
+  if(D.answered) return; D.answered=true;
+  const {set,queue,pos}=D; const i=queue[pos], it=set.items[i]; const ok=o===it.a-1;
+  record(sid(set.id,i),ok); D.res.push({i,ok});
+  app.querySelectorAll('.ch').forEach(b=>{b.disabled=true; const v=+b.dataset.o; if(v===it.a-1) b.classList.add('right'); else if(v===o) b.classList.add('wrong');});
+  const st=document.createElement('div'); st.className='stamp '+(ok?'o':'x'); st.textContent=ok?'○':'✕'; $('#card').appendChild(st);
+  $('#under').innerHTML=`<div class="ans"><div class="ref num">教科書 ${it.ref.replace('-','・')}</div></div>`;
+  const b=document.createElement('button'); b.className='next'; b.type='button'; b.id='nx'; b.textContent=pos+1<queue.length?'次へ →':'結果を見る';
+  b.onclick=next; $('#ctrl').appendChild(b); b.focus({preventScroll:true});
+}
+function next(){ D.pos++; if(D.pos>=D.queue.length) finish(); else card(); }
+function finish(quit){
+  const {set,res}=D; view='result';
+  if(!res.length){ setPage(set.id); return; }
+  const ok=res.filter(r=>r.ok).length, ng=res.filter(r=>!r.ok);
+  const pct=Math.round(ok/res.length*100);
+  app.innerHTML=`<div class="res">
+    <h2>${quit?'ここまでの結果':'おつかれさま！'}</h2>
+    <div class="score num"><b>${ok}</b><span>/ ${res.length}問正解（${pct}%）</span></div>
+    <p class="hint">${pct===100?'全問正解。苦手優先モードで他の問題も確認しよう。':ng.length?'×の問題は「苦手」として記録され、苦手優先・間違えた問題モードで先に出ます。':''}</p>
+    <div class="btns">
+      ${ng.length?`<button class="btn2 solid" type="button" id="again">×の${ng.length}問をもう一度</button>`:''}
+      <button class="btn2 ${ng.length?'':'solid'}" type="button" id="more">同じ設定で続ける</button>
+      <button class="btn2" type="button" id="toSet">${set.name}のページへ</button>
+    </div>
+    ${ng.length?`<div class="panel"><h3>間違えた問題</h3><div class="list">${ng.map(r=>{const it=set.items[r.i];
+      const q=set.kind==='choice'?`<b>${rich(it.word)}</b>`:rich(it.q); const a=set.kind==='choice'?rich(it.opts[it.a-1]):esc(it.a);
+      return `<div class="li"><span class="n num">${r.i+1}</span><span class="q">${q}</span><span class="a">${a}<span class="ref">${it.ref}</span></span></div>`}).join('')}</div></div>`:''}
+  </div>`;
+  if(ng.length) $('#again').onclick=()=>startDrill(set,shuffle(ng.map(r=>r.i)));
+  $('#more').onclick=()=>{cfg.set=set.id;const q=buildQueue();q.length?startDrill(set,q):setPage(set.id)};
+  $('#toSet').onclick=()=>setPage(set.id);
+  scrollTo(0,0);
+}
+
+/* ---------- 手書きメモ ---------- */
+function pad(){
+  const cv=$('#cv'), ctx=cv.getContext('2d'); const r=devicePixelRatio||1;
+  const fit=()=>{cv.width=cv.clientWidth*r;cv.height=cv.clientHeight*r;ctx.scale(r,r);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=3.2;ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()};
+  fit();
+  let drawing=false,lx=0,ly=0;
+  const p=e=>{const b=cv.getBoundingClientRect();return [e.clientX-b.left,e.clientY-b.top]};
+  cv.onpointerdown=e=>{drawing=true;cv.setPointerCapture(e.pointerId);[lx,ly]=p(e);ctx.beginPath();ctx.arc(lx,ly,1.4,0,7);ctx.fill();};
+  cv.onpointermove=e=>{if(!drawing)return;const [x,y]=p(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.stroke();lx=x;ly=y};
+  cv.onpointerup=cv.onpointercancel=()=>drawing=false;
+  ctx.fillStyle=ctx.strokeStyle;
+  $('#clr').onclick=()=>{ctx.clearRect(0,0,cv.width,cv.height)};
+}
+
+/* ---------- キーボード ---------- */
+addEventListener('keydown',e=>{
+  if(view!=='drill'||e.target.tagName==='INPUT') return;
+  const choice=D.style==='choice';
+  if(choice){
+    if(!D.answered && /^[1-4]$/.test(e.key)){ choose(D.order[+e.key-1]); e.preventDefault(); }
+    else if(D.answered && (e.key==='Enter'||e.key===' '||e.key==='ArrowRight')){ next(); e.preventDefault(); }
+    return;
+  }
+  if(!D.flipped && (e.key===' '||e.key==='Enter')){ flip(); e.preventDefault(); }
+  else if(D.flipped && (e.key==='ArrowRight'||e.key==='o')){ grade(true); e.preventDefault(); }
+  else if(D.flipped && (e.key==='ArrowLeft'||e.key==='x')){ grade(false); e.preventDefault(); }
+});
+
+/* ---------- 今日の学習数・設定 ---------- */
+function streak(){ let n=0; const d=new Date(); for(;;){ const k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); if(DB.days[k]){n++;d.setDate(d.getDate()-1)} else if(n===0&&k===dayKey()){d.setDate(d.getDate()-1)} else break; } return n }
+function renderToday(){ const t=DB.days[dayKey()]||0, s=streak(); $('#today').innerHTML=`今日 <b>${t}</b>問${s>1?`・${s}日連続`:''}`; }
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,1800)}
+$('#setBtn').onclick=()=>{
+  const m=$('#modal'); m.hidden=false; m.className='modal';
+  const total=Object.keys(DB.st).length;
+  m.innerHTML=`<div class="sheet" role="dialog" aria-label="設定">
+    <h3>設定</h3>
+    <div class="row"><label><input type="checkbox" id="pTate" ${DB.pref.tate?'checked':''}> 読み・書きの問題文を縦書きで表示</label></div>
+    <div class="row"><label><input type="checkbox" id="pPad" ${DB.pref.pad?'checked':''}> 読み・書きで手書きメモ欄を出す</label></div>
+    <div class="panel" style="margin-top:16px"><h3>記録</h3>
+      <p class="hint" style="margin-top:0">学習記録（${total}問ぶん）はこのブラウザだけに保存されています。別の端末やブラウザとは共有されません。</p>
+      <div class="row"><select id="rsSet"><option value="">すべて</option>${SETS.map(s=>`<option value="${s.id}">${s.test} ${s.name}</option>`).join('')}</select>
+      <button type="button" class="danger" id="rs">記録を消す</button></div>
+      <div class="row" id="rsc" hidden><span>本当に消しますか？元に戻せません。</span><button type="button" class="danger solid" id="rsy">消す</button><button type="button" class="chip" id="rsn">やめる</button></div>
+    </div>
+    <div class="row" style="justify-content:flex-end"><button type="button" class="btn2 solid" id="close" style="padding:9px 22px">閉じる</button></div>
+  </div>`;
+  const close=()=>{m.hidden=true; if(view==='home')home(); else if(view==='set')setPage(cfg.set,true); else if(view==='drill')card();};
+  $('#close').onclick=close; m.onclick=e=>{if(e.target===m)close()};
+  $('#pTate').onchange=e=>{DB.pref.tate=e.target.checked;save()};
+  $('#pPad').onchange=e=>{DB.pref.pad=e.target.checked;save()};
+  $('#rs').onclick=()=>{$('#rsc').hidden=false};
+  $('#rsn').onclick=()=>{$('#rsc').hidden=true};
+  $('#rsy').onclick=()=>{const v=$('#rsSet').value; if(!v) DB.st={}; else Object.keys(DB.st).forEach(k=>{if(k.startsWith(v+':'))delete DB.st[k]}); save(); $('#rsc').hidden=true; toast('記録を消しました');};
+};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)$('#close')?.click()});
+
+renderToday(); home();
+})();
+</script>
+
+</body>
+</html>
