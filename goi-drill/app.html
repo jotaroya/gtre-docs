@@ -98,13 +98,20 @@ input[type=number]{width:5.2em}
 .cell.ng{background:var(--shu);color:var(--sheet)}
 
 .list{margin-top:10px;display:grid;gap:0}
-.li{display:grid;grid-template-columns:2.6em 1fr;gap:4px 10px;padding:10px 0;border-top:1px solid var(--rule);align-items:baseline}
+.li{display:grid;grid-template-columns:2.6em 1fr;gap:4px 10px;padding:10px 6px;border-top:1px solid var(--rule);align-items:baseline;border-radius:6px}
+.li[role=button]{cursor:pointer;user-select:none;-webkit-user-select:none}
+.li[role=button]:hover{background:var(--paper)}
 .li .n{color:var(--ink-2);font-size:12px;text-align:right}
 .li .q{font-family:var(--f-display);font-size:16px;min-width:0}
-.li .a{grid-column:2;font-size:15px;color:var(--shu);font-weight:700;min-width:0}
-.li .a.hide{color:transparent;background:var(--shu-soft);border-radius:4px;cursor:pointer;user-select:none}
-.li .a.hide::after{content:"タップで表示";color:var(--shu);font-size:11px;font-weight:400}
+.li .a{grid-column:2;font-size:15px;color:var(--shu);font-weight:700;min-width:0;position:relative;justify-self:start;padding:1px 6px;margin-left:-6px;border-radius:4px}
+.li .a::before{content:"";position:absolute;inset:0;border-radius:4px;background:var(--shu);opacity:0;transition:opacity .15s}
+.li.hide .a::before{opacity:.82}
+.li.hide .a{color:transparent;min-width:9.5em}
+.li.hide .a .ref{color:transparent}
+.li.hide .a::after{content:"タップでめくる";position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--sheet);font-size:11px;font-weight:500;white-space:nowrap}
 .li .a .ref{color:var(--ink-2);font-weight:400;font-size:11px;margin-left:8px}
+.li .tg{display:none}
+@media (prefers-reduced-motion:reduce){.li .a::before{transition:none}}
 .li.flash{background:var(--kon-soft)}
 
 /* drill */
@@ -318,6 +325,7 @@ function setPage(id,keep){
   </div>
   <div class="panel"><h3>一覧で確認</h3>
     <div class="chips"><button type="button" class="chip" id="hideT" aria-pressed="${cfg.hide}">答えをかくす（赤シート）</button></div>
+    <p class="hint">問題をタップすると、その問題だけ赤シートをめくれます。もう一度タップでかぶせ直し。</p>
     <div class="list" id="list"></div>
   </div>`;
   $('#bk').onclick=home;
@@ -337,8 +345,12 @@ function renderList(set){
   $('#list').innerHTML=set.items.map((it,i)=>{
     const q = set.kind==='choice' ? `<b>${rich(it.word)}</b>` : rich(it.q);
     const a = set.kind==='choice' ? rich(it.opts[it.a-1]) : esc(it.a);
-    return `<div class="li" id="li${i}"><span class="n num">${i+1}</span><span class="q">${q}</span><span class="a ${cfg.hide?'hide':''}">${a}<span class="ref">${it.ref}</span></span></div>`}).join('');
-  $('#list').querySelectorAll('.a.hide').forEach(a=>a.onclick=()=>a.classList.remove('hide'));
+    return `<div class="li ${cfg.hide?'hide':''}" id="li${i}" role="button" tabindex="0" aria-label="${i+1}番の答えをめくる"><span class="n num">${i+1}</span><span class="q">${q}</span><span class="a">${a}<span class="ref">${it.ref}</span></span></div>`}).join('');
+  // その問題だけ赤シートをめくる／かぶせる
+  $('#list').querySelectorAll('.li').forEach(li=>{
+    li.onclick=()=>li.classList.toggle('hide');
+    li.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();li.classList.toggle('hide')}};
+  });
 }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
 function buildQueue(){
