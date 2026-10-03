@@ -178,12 +178,22 @@ rt{font-size:.5em;font-family:var(--f-ui);color:var(--ink-2)}
 .sheet .row{margin-top:10px}
 .danger{border:1px solid var(--shu);color:var(--shu);background:none;border-radius:10px;padding:9px 14px}
 .danger.solid{background:var(--shu);color:var(--sheet)}
+/* QR */
+.qrbox{display:flex;justify-content:center;padding:12px;background:#fff;border-radius:12px;border:1px solid var(--rule)}
+.qrbox svg{width:min(260px,70vw);height:auto;display:block}
+.qrurl{font-size:12px;color:var(--ink-2);word-break:break-all;margin-top:8px}
+.qrin{width:100%;font:inherit;font-size:13px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:8px;padding:7px 9px}
+.qrfull{position:fixed;inset:0;z-index:40;background:#fff;color:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;cursor:pointer}
+.qrfull svg{width:min(80vmin,640px);height:auto}
+.qrfull p{margin:0;font-family:var(--f-display);font-size:clamp(18px,3.4vmin,30px);font-weight:700;text-align:center}
+.qrfull small{font-size:13px;color:#555}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:999px;font-size:13px;z-index:30}
 </style>
 
 <div class="bar"><div class="in">
   <h1 id="ttl">統一テスト語彙ドリル<small>入試頻出漢字＋現代文重要語彙TOP2500</small></h1>
   <span class="today num" id="today"></span>
+  <button class="iconbtn" id="qrBtn" type="button" aria-label="QRコードを表示">QR</button>
   <button class="iconbtn" id="setBtn" type="button" aria-label="設定">設定</button>
 </div></div>
 <main class="wrap" id="app"></main>
@@ -487,6 +497,57 @@ $('#setBtn').onclick=()=>{
 };
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)$('#close')?.click()});
 
-renderToday(); home();
+
+/* ---------- QRコード ---------- */
+const QR_LIB='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+const DEFAULT_URL='https://jotaroya.github.io/gtre-docs/goi-drill/';
+function selfUrl(){
+  try{ const u=new URL(location.href);
+    if(/^https?:$/.test(u.protocol) && !/claude|anthropic/.test(u.hostname)){ u.hash=''; return u.href; } }catch(e){}
+  return null;
+}
+function loadQR(){ return window.qrcode ? Promise.resolve() : new Promise((ok,ng)=>{ const sc=document.createElement('script'); sc.src=QR_LIB; sc.onload=ok; sc.onerror=ng; document.head.appendChild(sc); }); }
+function qrSvg(text){ const q=qrcode(0,'M'); q.addData(unescape(encodeURIComponent(text))); q.make(); return q.createSvgTag({cellSize:8,margin:2,scalable:true}); }
+function openQR(){
+  const m=$('#modal'); m.hidden=false; m.className='modal';
+  const base = DB.qrUrl || selfUrl() || DEFAULT_URL;
+  const cur = view==='set' ? cfg.set : (view==='drill'||view==='result') ? D.set.id : '';
+  m.innerHTML=`<div class="sheet" role="dialog" aria-label="QRコード">
+    <h3>QRコードで配る</h3>
+    <p class="hint" style="margin-top:0">生徒はカメラで読み取るだけで開けます。記録はそれぞれのスマホに保存されます。</p>
+    <div class="row" style="margin-top:4px"><label style="flex:1">開くページ
+      <select id="qrTo" style="flex:1"><option value="">トップ（全セット）</option>${SETS.map(s=>`<option value="${s.id}" ${s.id===cur?'selected':''}>${s.test} ${s.name}</option>`).join('')}</select></label></div>
+    <div class="qrbox" id="qrBox" style="margin-top:12px"><span class="hint">QRコードを作っています…</span></div>
+    <div class="qrurl num" id="qrUrl"></div>
+    <div class="row">
+      <button type="button" class="btn2 solid" id="qrFull" style="flex:1">大きく表示（教室で映す）</button>
+      <button type="button" class="btn2" id="qrCopy">URLをコピー</button>
+    </div>
+    <details style="margin-top:12px"><summary class="hint" style="cursor:pointer">公開URLを変更する</summary>
+      <input class="qrin" id="qrBase" type="url" value="${esc(base)}" aria-label="公開URL" style="margin-top:8px">
+      <p class="hint">サイトを置いた場所のURL。変えるとこの端末に保存されます。</p></details>
+    <div class="row" style="justify-content:flex-end"><button type="button" class="chip" id="close">閉じる</button></div>
+  </div>`;
+  const url=()=>{ const b=($('#qrBase').value||DEFAULT_URL).trim(); const t=$('#qrTo').value; return t? b.replace(/#.*$/,'')+'#'+t : b; };
+  const draw=()=>{ const u=url(); $('#qrUrl').textContent=u;
+    loadQR().then(()=>{ $('#qrBox').innerHTML=qrSvg(u); })
+      .catch(()=>{ $('#qrBox').innerHTML='<span class="hint">QRコードの部品を読み込めませんでした。ネットにつながっているか確認してください。</span>'; }); };
+  draw();
+  $('#qrTo').onchange=draw;
+  $('#qrBase').onchange=()=>{ DB.qrUrl=$('#qrBase').value.trim()||undefined; save(); draw(); };
+  $('#qrCopy').onclick=()=>{ const u=url(); (navigator.clipboard?.writeText(u)||Promise.reject()).then(()=>toast('URLをコピーしました')).catch(()=>{ const r=document.createRange(); r.selectNodeContents($('#qrUrl')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('URLを選択しました'); }); };
+  $('#qrFull').onclick=()=>{ if(!window.qrcode) return; const t=$('#qrTo').value; const f=document.createElement('div'); f.className='qrfull'; f.setAttribute('role','dialog');
+    f.innerHTML=`${qrSvg(url())}<p>統一テスト語彙ドリル${t?'　'+SET[t].test+' '+SET[t].name:''}</p><small>スマホのカメラで読み取ってください（タップで閉じる）</small>`;
+    f.onclick=()=>f.remove(); document.body.appendChild(f); };
+  const close=()=>{m.hidden=true}; $('#close').onclick=close; m.onclick=e=>{if(e.target===m)close()};
+}
+$('#qrBtn').onclick=openQR;
+addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelector('.qrfull')?.remove(); });
+
+/* #yomi などで直接そのセットを開く */
+function fromHash(){ const h=location.hash.slice(1); if(SET[h]) setPage(h); }
+addEventListener('hashchange',fromHash);
+
+renderToday(); home(); fromHash();
 })();
 </script>
