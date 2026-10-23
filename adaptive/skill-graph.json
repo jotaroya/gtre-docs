@@ -1,0 +1,46 @@
+{
+  "version": "0.1.0",
+  "scope": "小3〜小6の算数 → 中1 数と式（正負の数・文字式・一次方程式）",
+  "gradeCodes": { "E3": "小3", "E4": "小4", "E5": "小5", "E6": "小6", "J1": "中1" },
+  "skills": [
+    { "id": "E3_mul_table", "name": "九九・かけ算の基本", "grade": "E3", "prereqs": [] },
+    { "id": "E3_div_basic", "name": "わり算の基本（あまりなし）", "grade": "E3", "prereqs": ["E3_mul_table"] },
+    { "id": "E4_int_calc", "name": "整数の四則計算と計算の順序", "grade": "E4", "prereqs": ["E3_mul_table", "E3_div_basic"] },
+    { "id": "E4_decimal_basic", "name": "小数のしくみと加減", "grade": "E4", "prereqs": ["E4_int_calc"] },
+    { "id": "E5_factor_multiple", "name": "約数・倍数", "grade": "E5", "prereqs": ["E3_div_basic"] },
+    { "id": "E5_gcd_lcm", "name": "最大公約数・最小公倍数", "grade": "E5", "prereqs": ["E5_factor_multiple"] },
+    { "id": "E5_fraction_equiv", "name": "約分・通分", "grade": "E5", "prereqs": ["E5_gcd_lcm"] },
+    { "id": "E5_decimal_muldiv", "name": "小数のかけ算・わり算", "grade": "E5", "prereqs": ["E4_decimal_basic", "E3_div_basic"] },
+    { "id": "E5_fraction_addsub", "name": "分数の加減（異分母）", "grade": "E5", "prereqs": ["E5_fraction_equiv"] },
+    { "id": "E5_percent", "name": "割合・百分率", "grade": "E5", "prereqs": ["E5_decimal_muldiv"] },
+    { "id": "E6_fraction_muldiv", "name": "分数のかけ算・わり算", "grade": "E6", "prereqs": ["E5_fraction_addsub"] },
+    { "id": "E6_frac_dec_convert", "name": "分数と小数の変換", "grade": "E6", "prereqs": ["E5_fraction_equiv", "E5_decimal_muldiv"] },
+    { "id": "E6_ratio", "name": "比・比の値", "grade": "E6", "prereqs": ["E6_fraction_muldiv"] },
+    { "id": "E6_letter_expr", "name": "文字を使った式（□・xの導入）", "grade": "E6", "prereqs": ["E4_int_calc"] },
+
+    { "id": "J1_neg_concept", "name": "正負の数の意味・数直線", "grade": "J1", "prereqs": ["E4_int_calc"] },
+    { "id": "J1_abs", "name": "絶対値・大小比較", "grade": "J1", "prereqs": ["J1_neg_concept"] },
+    { "id": "J1_addsub_int", "name": "正負の数の加法・減法（整数）", "grade": "J1", "prereqs": ["J1_abs"] },
+    { "id": "J1_addsub_frac_dec", "name": "正負の数の加減（分数・小数）", "grade": "J1", "prereqs": ["J1_addsub_int", "E5_fraction_addsub", "E4_decimal_basic"] },
+    { "id": "J1_muldiv", "name": "正負の数の乗法・除法", "grade": "J1", "prereqs": ["J1_addsub_int", "E3_mul_table"] },
+    { "id": "J1_muldiv_frac", "name": "正負の数の乗除（分数・逆数）", "grade": "J1", "prereqs": ["J1_muldiv", "E6_fraction_muldiv"] },
+    { "id": "J1_power", "name": "累乗", "grade": "J1", "prereqs": ["J1_muldiv"] },
+    { "id": "J1_mixed_calc", "name": "四則混合計算（正負の数）", "grade": "J1", "prereqs": ["J1_power", "J1_muldiv_frac", "J1_addsub_frac_dec"] },
+    { "id": "J1_prime_factor", "name": "素数・素因数分解", "grade": "J1", "prereqs": ["E5_factor_multiple"] },
+
+    { "id": "J1_letter_notation", "name": "文字式の表し方（×÷の省略）", "grade": "J1", "prereqs": ["E6_letter_expr", "J1_muldiv"] },
+    { "id": "J1_substitution", "name": "式の値（代入）", "grade": "J1", "prereqs": ["J1_letter_notation", "J1_power"] },
+    { "id": "J1_like_terms", "name": "同類項をまとめる", "grade": "J1", "prereqs": ["J1_letter_notation", "J1_addsub_int"] },
+    { "id": "J1_linear_addsub", "name": "一次式の加法・減法（かっこ）", "grade": "J1", "prereqs": ["J1_like_terms"] },
+    { "id": "J1_linear_muldiv", "name": "一次式と数の乗除", "grade": "J1", "prereqs": ["J1_like_terms", "J1_muldiv"] },
+    { "id": "J1_linear_frac", "name": "分数係数の一次式", "grade": "J1", "prereqs": ["J1_linear_addsub", "E5_fraction_equiv"] },
+
+    { "id": "J1_equality_prop", "name": "等式の性質", "grade": "J1", "prereqs": ["J1_letter_notation", "J1_addsub_int"] },
+    { "id": "J1_eq_transposition", "name": "移項", "grade": "J1", "prereqs": ["J1_equality_prop", "J1_like_terms"] },
+    { "id": "J1_eq_basic", "name": "一次方程式（基本）", "grade": "J1", "prereqs": ["J1_eq_transposition", "J1_muldiv"] },
+    { "id": "J1_eq_paren", "name": "一次方程式（かっこ）", "grade": "J1", "prereqs": ["J1_eq_basic", "J1_linear_muldiv"] },
+    { "id": "J1_eq_frac", "name": "一次方程式（分数・小数係数）", "grade": "J1", "prereqs": ["J1_eq_basic", "J1_linear_frac", "E6_fraction_muldiv"] },
+    { "id": "J1_proportion", "name": "比例式", "grade": "J1", "prereqs": ["J1_eq_basic", "E6_ratio"] },
+    { "id": "J1_eq_word", "name": "一次方程式の文章題", "grade": "J1", "prereqs": ["J1_eq_paren", "J1_eq_frac"] }
+  ]
+}

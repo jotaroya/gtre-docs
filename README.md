@@ -11,6 +11,7 @@
 | ファイル | 内容 |
 |---------|------|
 | [requirements.md](./requirements.md) | **要件定義書 v1.1** — 機能要件・非機能要件・セキュリティ要件・データモデル・API設計・コンテンツ構造（全学年・6社対応・単語オプション将来計画） |
+| [adaptive-learning-design.md](./adaptive-learning-design.md) | **アダプティブ学習機能 設計書（ドラフト）** — 知識グラフ・診断ロジック・データモデル・ロードマップ（プロトタイプ: [adaptive/](./adaptive/)） |
 | [project-plan.md](./project-plan.md) | **開発計画書 v1.1** — フェーズ計画・バックログ・技術的負債・セキュリティ強化計画・開発ガイドライン |
 
 ---
